@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         actv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         actv.setThreshold(1);//will start working from first character
         actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-
+        actv.clearFocus();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(new MyFragmentPageAdapter(getSupportFragmentManager(),this));

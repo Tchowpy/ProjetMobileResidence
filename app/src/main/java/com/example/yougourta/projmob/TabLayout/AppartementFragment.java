@@ -179,6 +179,8 @@ public class AppartementFragment extends Fragment {
                 })
         );
 
+        MainActivity.actv.clearFocus();
+
         MainActivity.actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
