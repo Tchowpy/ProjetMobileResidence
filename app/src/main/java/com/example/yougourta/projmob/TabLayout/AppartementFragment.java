@@ -6,9 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.example.yougourta.projmob.Classes.Commentaire;
 import com.example.yougourta.projmob.Classes.Disponibilite;
@@ -175,7 +179,7 @@ public class AppartementFragment extends Fragment {
                 })
         );
 
-        /*MainActivity.actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        MainActivity.actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int i = 0;
@@ -204,9 +208,10 @@ public class AppartementFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.equals(""))
+                if (String.valueOf(s).isEmpty())
                 {
-                    recyclerView.setAdapter(new LogementsAdapter(logementsNew));
+                    logements = logementsNew;
+                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -214,7 +219,7 @@ public class AppartementFragment extends Fragment {
             public void afterTextChanged(Editable s) {
 
             }
-        });*/
+        });
 
     }
 

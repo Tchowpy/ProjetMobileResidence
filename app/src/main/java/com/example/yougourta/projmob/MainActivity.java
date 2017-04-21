@@ -1,17 +1,39 @@
 package com.example.yougourta.projmob;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
+import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.yougourta.projmob.Classes.MesRdvEnAttenteSingleRow;
+import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
+import com.example.yougourta.projmob.Classes.Utilisateur;
+
+import com.example.yougourta.projmob.NavDrawer.MesRdvActivity;
+import com.example.yougourta.projmob.NavDrawer.MesRdvEnAttenteActivity;
+import com.example.yougourta.projmob.TabLayout.AppartementFragment;
+
+import java.security.acl.Group;
+import java.util.ArrayList;
 
 import com.example.yougourta.projmob.Classes.Utilisateur;
 
@@ -22,6 +44,9 @@ public class MainActivity extends AppCompatActivity
     public static Utilisateur user2;
     public static Utilisateur user3;
     public static Utilisateur user4;
+
+    public static boolean estConnecte = false;
+    public static Utilisateur userConnected = null;
 
     TabLayout tabLayout;
     private DrawerLayout myDrawerLayout;
@@ -40,6 +65,8 @@ public class MainActivity extends AppCompatActivity
         user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", 0, false, null);
         user3 = new Utilisateur("NadjiMob", "nadji_mob", "+213780668840", "dn_azri@esi.dz", "Stade", R.drawable.ic_picture2, true, null);
         user4 = new Utilisateur("YougortaTchowh", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", R.drawable.ic_picture1, true, null);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,22 +92,55 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        this.userConnected = user3;
+        View hview = navigationView.getHeaderView(0);
+        estConnecte = true;
+        if(estConnecte ==false){
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte,false);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte,false);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte,true);
+
+            ImageView imageView = (ImageView) hview.findViewById(R.id.nav_header_image);
+            imageView.setImageResource(R.drawable.ic_account_circle_black_24dp);
+
+            TextView textView1 = (TextView) hview.findViewById(R.id.header_textview1);
+            TextView textView2 = (TextView) hview.findViewById(R.id.header_textview2);
+            textView1.setText("Vous êtes hors connexion");
+            textView2.setText(" ");
+        }
+        else{
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte,true);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte,true);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte,false);
+
+            TextView textView1 = (TextView) hview.findViewById(R.id.header_textview1);
+            TextView textView2 = (TextView) hview.findViewById(R.id.header_textview2);
+            ImageView imageView = (ImageView) hview.findViewById(R.id.nav_header_image);
+            imageView.setImageResource(userConnected.getImageUser());
+            textView1.setText("Vous êtes connectés en tant que");
+            textView2.setText(this.userConnected.getEmailUser());
+        }
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else
-            {
+        } else {
             super.onBackPressed();
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -89,6 +149,10 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -98,25 +162,50 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        ArrayList<MesRdvListeSingleRow> list = new ArrayList<MesRdvListeSingleRow>();
+        ArrayList<MesRdvEnAttenteSingleRow> list1 = new ArrayList<MesRdvEnAttenteSingleRow>();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_accueil) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            //Toast.makeText(MainActivity.this, AppartementFragment.logements.get(0).getProprietaireLogement().getEmailUser().toString(), Toast.LENGTH_SHORT).show();
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_mes_annonces) {
 
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_mes_rdv) {
 
-        } else if (id == R.id.nav_share) {
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AIT SAADA ","Villa 15","17-01-2019","15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("BOURIANE ","Bungalow 15","17-01-2019","15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            Intent intent = new Intent(MainActivity.this, MesRdvEnAttenteActivity.class);
+            intent.putExtra("list",list1);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_send) {
+        }else if (id == R.id.nav_mes_demandes_rdv) {
+
+            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list.add(new MesRdvListeSingleRow("AIT SAADA Yougourta","Villa 15","17-01-2019","15h"));
+            list.add(new MesRdvListeSingleRow("BOURIANE Arezki","Bungalow 15","17-01-2019","15h"));
+            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            Intent intent = new Intent(MainActivity.this, MesRdvActivity.class);
+            intent.putExtra("list",list);
+            startActivity(intent);
+
+        }
+
+        else if (id == R.id.nav_deconnexion) {
+
+
+        }
+        else if (id == R.id.nav_se_connecter) {
+
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }
