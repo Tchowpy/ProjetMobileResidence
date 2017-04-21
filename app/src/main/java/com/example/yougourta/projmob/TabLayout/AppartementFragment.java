@@ -154,7 +154,7 @@ public class AppartementFragment extends Fragment {
         logements.add(logement5);
         logements.add(logement6);
 
-        logementsNew = logements;
+        logementsNew.addAll(logements);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewAppartement);
 
@@ -210,7 +210,8 @@ public class AppartementFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (String.valueOf(s).isEmpty())
                 {
-                    logements = logementsNew;
+                    logements.clear();
+                    logements.addAll(logementsNew);
                     adapter.notifyDataSetChanged();
                 }
             }

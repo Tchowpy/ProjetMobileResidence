@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.view.Window;
@@ -39,21 +41,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DetailActivity extends FragmentActivity implements OnMapReadyCallback {
+public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
-
-    private GoogleMap mMap;
-
     Logement logement;
     RatingBar ratingBar;
-
     ImageButton right;
     ImageButton left;
-
     int cpt = 0;
-
+    private GoogleMap mMap;
     private SimpleDateFormat mFormatter = new SimpleDateFormat("MMMM dd yyyy hh:mm aa");
     private Button mButton;
 
@@ -82,6 +79,10 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -307,7 +308,7 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(logement.getLatitude(), logement.getLongetude());
-        mMap.addMarker(new MarkerOptions().position(sydney).title(logement.getTitreLogement()+" "));
+        mMap.addMarker(new MarkerOptions().position(sydney).title(logement.getTitreLogement()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
 
