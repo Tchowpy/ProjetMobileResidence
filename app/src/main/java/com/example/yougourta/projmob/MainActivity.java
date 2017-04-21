@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     public static Utilisateur user2;
     public static Utilisateur user3;
     public static Utilisateur user4;
+    /*viive mobb*/
 
     public static boolean estConnecte = false;
     public static Utilisateur userConnected = null;
