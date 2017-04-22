@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity
     TabLayout tabLayout;
     private DrawerLayout myDrawerLayout;
     private ActionBarDrawerToggle myToggle;
+    NavigationView navigationView;
 
-    String[] fruits = {"Bejaia", "Oued Smar", "El Kseur","Oued Ghir", "Said Hamdine", "Ben Aknoun", "Bab Ezzouar"};
+    String[] fruits = {"Bejaia", "Oued Smar", "El Kseur", "Oued Ghir", "Said Hamdine", "Ben Aknoun", "Bab Ezzouar"};
 
     public static AutoCompleteTextView actv;
 
@@ -63,12 +64,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", 0,false, null);
+        user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", 0, false, null);
         user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", 0, false, null);
         user3 = new Utilisateur("NadjiMob", "nadji_mob", "+213780668840", "dn_azri@esi.dz", "Stade", R.drawable.ic_picture2, true, null);
         user4 = new Utilisateur("YougortaTchowh", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", R.drawable.ic_picture1, true, null);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         actv.clearFocus();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new MyFragmentPageAdapter(getSupportFragmentManager(),this));
+        viewPager.setAdapter(new MyFragmentPageAdapter(getSupportFragmentManager(), this));
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -96,12 +97,19 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         View hview = navigationView.getHeaderView(0);
 
-        if(estConnecte ==false){
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte,false);
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte,false);
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte,true);
+        if (estConnecte == false) {
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte, false);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte, false);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte, true);
 
             ImageView imageView = (ImageView) hview.findViewById(R.id.nav_header_image);
             imageView.setImageResource(R.drawable.ic_account_circle_black_24dp);
@@ -110,11 +118,10 @@ public class MainActivity extends AppCompatActivity
             TextView textView2 = (TextView) hview.findViewById(R.id.header_textview2);
             textView1.setText("Vous êtes hors connexion");
             textView2.setText(" ");
-        }
-        else{
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte,true);
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte,true);
-            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte,false);
+        } else {
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte, true);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte, true);
+            navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte, false);
 
             TextView textView1 = (TextView) hview.findViewById(R.id.header_textview1);
             TextView textView2 = (TextView) hview.findViewById(R.id.header_textview2);
@@ -124,6 +131,8 @@ public class MainActivity extends AppCompatActivity
             textView2.setText(this.userConnected.getEmailUser());
         }
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -172,29 +181,27 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mes_rdv) {
 
-            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
-            list1.add(new MesRdvEnAttenteSingleRow("AIT SAADA ","Villa 15","17-01-2019","15h"));
-            list1.add(new MesRdvEnAttenteSingleRow("BOURIANE ","Bungalow 15","17-01-2019","15h"));
-            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
-            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AIT SAADA ", "Villa 15", "17-01-2019", "15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("BOURIANE ", "Bungalow 15", "17-01-2019", "15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
             Intent intent = new Intent(MainActivity.this, MesRdvEnAttenteActivity.class);
-            intent.putExtra("list",list1);
+            intent.putExtra("list", list1);
             startActivity(intent);
 
-        }else if (id == R.id.nav_mes_demandes_rdv) {
+        } else if (id == R.id.nav_mes_demandes_rdv) {
 
-            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
-            list.add(new MesRdvListeSingleRow("AIT SAADA Yougourta","Villa 15","17-01-2019","15h"));
-            list.add(new MesRdvListeSingleRow("BOURIANE Arezki","Bungalow 15","17-01-2019","15h"));
-            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
-            list.add(new MesRdvListeSingleRow("AZRI Nadji","APPARTEMENT f03","17-01-2019","15h"));
+            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("AIT SAADA Yougourta", "Villa 15", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("BOURIANE Arezki", "Bungalow 15", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
             Intent intent = new Intent(MainActivity.this, MesRdvActivity.class);
-            intent.putExtra("list",list);
+            intent.putExtra("list", list);
             startActivity(intent);
 
-        }
-
-        else if (id == R.id.nav_deconnexion) {
+        } else if (id == R.id.nav_deconnexion) {
             estConnecte = false;
             userConnected = null;
 
@@ -212,15 +219,13 @@ public class MainActivity extends AppCompatActivity
                             // onLoginFailed();
                             progressDialog.dismiss();
                         }
-                    }, 3000);
+                    }, 1000);
 
 
-        }
-        else if (id == R.id.nav_se_connecter) {
+        } else if (id == R.id.nav_se_connecter) {
 
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -229,3 +234,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 }
+

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.yougourta.projmob.Classes.Logement;
+import com.example.yougourta.projmob.LoginActivity;
+import com.example.yougourta.projmob.MainActivity;
 import com.example.yougourta.projmob.R;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -90,7 +94,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mapFragment.getMapAsync(this);
 
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         logement = (Logement) intent.getSerializableExtra("appartement");
 
         /*recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPhotos);
@@ -205,42 +209,59 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         noter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog mDialog = new Dialog(DetailActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
 
-                mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                mDialog.setContentView(R.layout.activity_rating);
-                mDialog.show();
+                if(MainActivity.estConnecte == false){
+                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
+                    intent1.putExtra("logement",logement);
+                    startActivity(intent1);
 
-                final RatingBar ratingBarInterne = (RatingBar) mDialog.findViewById(R.id.ratingBar2);
-                Button submit = (Button) mDialog.findViewById(R.id.submit);
+                }
+                else{
+                    final Dialog mDialog = new Dialog(DetailActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
 
-                ratingBarInterne.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    mDialog.setContentView(R.layout.activity_rating);
+                    mDialog.show();
 
-                    @Override
-                    public void onRatingChanged(RatingBar ratingBar, float rating,
-                                                boolean fromUser) {
-                        if (rating < 1.0f)
-                            ratingBar.setRating(1.0f);
-                    }
-                });
+                    final RatingBar ratingBarInterne = (RatingBar) mDialog.findViewById(R.id.ratingBar2);
+                    Button submit = (Button) mDialog.findViewById(R.id.submit);
 
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        logement.setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logement.getNoteLogement())) / 2));
-                        ratingBar.setRating(Float.parseFloat(logement.getNoteLogement()));
-                        mDialog.cancel();
-                    }
-                });
+                    ratingBarInterne.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                        @Override
+                        public void onRatingChanged(RatingBar ratingBar, float rating,
+                                                    boolean fromUser) {
+                            if (rating < 1.0f)
+                                ratingBar.setRating(1.0f);
+                        }
+                    });
+
+                    submit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            logement.setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logement.getNoteLogement())) / 2));
+                            ratingBar.setRating(Float.parseFloat(logement.getNoteLogement()));
+                            mDialog.cancel();
+                        }
+                    });
+                }
+
             }
         });
 
         commentaire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailActivity.this, CommentairesActivity.class);
-                intent.putExtra("commentaires", logement.getCommentairesLogement());
-                startActivity(intent);
+                if(MainActivity.estConnecte==false){
+                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
+                    intent1.putExtra("commentaires", logement.getCommentairesLogement());
+                    startActivity(intent1);
+                }
+                else{
+                    Intent intent = new Intent(DetailActivity.this, CommentairesActivity.class);
+                    intent.putExtra("commentaires", logement.getCommentairesLogement());
+                    startActivity(intent);
+                }
             }
         });
 

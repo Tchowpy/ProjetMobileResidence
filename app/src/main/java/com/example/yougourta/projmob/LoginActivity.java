@@ -1,5 +1,6 @@
 package com.example.yougourta.projmob;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,16 +10,24 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.yougourta.projmob.Classes.Commentaire;
+import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.Classes.Utilisateur;
+import com.example.yougourta.projmob.Detail.CommentairesActivity;
+import com.example.yougourta.projmob.Detail.DetailActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +35,10 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
+    ArrayList<Commentaire> commentaires = null;
+    Logement logement = null;
+    RatingBar ratingBar;
+
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
@@ -42,6 +55,12 @@ public class LoginActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        Intent itnt = getIntent();
+        commentaires = (ArrayList<Commentaire>) itnt.getSerializableExtra("commentaires");
+        logement = (Logement) itnt.getSerializableExtra("logement");
+
+
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -95,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements
                         // onLoginFailed();
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 1000);
 
         /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);*/
@@ -125,9 +144,48 @@ public class LoginActivity extends AppCompatActivity implements
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        finish();
+        if(commentaires != null){
+            Intent intent = new Intent(LoginActivity.this, CommentairesActivity.class);
+            intent.putExtra("commentaires", commentaires);
+            startActivity(intent);
+            finish();
+        }
+        else if(logement != null){
+            final Dialog mDialog = new Dialog(LoginActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
+
+            ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+
+            mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mDialog.setContentView(R.layout.activity_rating);
+
+            mDialog.show();
+            this.finish();
+            final RatingBar ratingBarInterne = (RatingBar) mDialog.findViewById(R.id.ratingBar2);
+            Button submit = (Button) mDialog.findViewById(R.id.submit);
+
+            ratingBarInterne.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating,
+                                            boolean fromUser) {
+                    if (rating < 1.0f)
+                        ratingBar.setRating(1.0f);
+                }
+            });
+
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    logement.setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logement.getNoteLogement())) / 2));
+                    ratingBar.setRating(Float.parseFloat(logement.getNoteLogement()));
+                    mDialog.cancel();
+                }
+            });
+
+        }
+        else {
+            finish();
+        }
     }
 
     public void onLoginFailed() {

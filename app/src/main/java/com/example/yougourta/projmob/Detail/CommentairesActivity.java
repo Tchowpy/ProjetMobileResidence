@@ -40,7 +40,7 @@ public class CommentairesActivity extends AppCompatActivity {
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                commentaires.add(new Commentaire(MainActivity.user4, comment.getText().toString()));
+                commentaires.add(new Commentaire(MainActivity.userConnected, comment.getText().toString()));
                 comment.setText("");
                 adapter.notifyDataSetChanged();
                 listView.smoothScrollToPosition(adapter.getCount());
