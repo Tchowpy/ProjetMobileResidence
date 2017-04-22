@@ -294,6 +294,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         rdv = new MesRdvListeSingleRow();
         rdv.setNom(MainActivity.userConnected.getIdUser());
         rdv.setLogement(logement.getTitreLogement());
+
         rendezvous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

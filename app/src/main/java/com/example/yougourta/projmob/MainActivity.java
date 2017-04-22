@@ -197,10 +197,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mes_demandes_rdv) {
 
-            if(DetailActivity.rdv != null)
+            if((DetailActivity.rdv != null) && (!String.valueOf(DetailActivity.rdv.getHeure()).equals("null")))
             {
                 list.add(DetailActivity.rdv);
             }
+
             Intent intent = new Intent(MainActivity.this, ConfirmerRdvs.class);
             intent.putExtra("list", list);
             startActivity(intent);
