@@ -210,7 +210,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             str = str + '\n' + logement.getJoursVisiteLogement().get(i).getJourDispo() + " : " + logement.getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logement.getJoursVisiteLogement().get(i).getHeureFinDispo();
         }
         horaires.setText(str);
-
+/*vive mob*/
 
         noter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +218,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 if(MainActivity.estConnecte == false){
                     Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
-                    intent1.putExtra("logement",logement);
                     startActivity(intent1);
 
                 }

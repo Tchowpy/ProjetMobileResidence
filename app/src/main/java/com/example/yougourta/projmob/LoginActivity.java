@@ -36,8 +36,7 @@ public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
     ArrayList<Commentaire> commentaires = null;
-    Logement logement = null;
-    RatingBar ratingBar;
+
 
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
@@ -58,9 +57,6 @@ public class LoginActivity extends AppCompatActivity implements
 
         Intent itnt = getIntent();
         commentaires = (ArrayList<Commentaire>) itnt.getSerializableExtra("commentaires");
-        logement = (Logement) itnt.getSerializableExtra("logement");
-
-
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -150,41 +146,10 @@ public class LoginActivity extends AppCompatActivity implements
             startActivity(intent);
             finish();
         }
-        else if(logement != null){
-            final Dialog mDialog = new Dialog(LoginActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
 
-            ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-
-            mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            mDialog.setContentView(R.layout.activity_rating);
-
-            mDialog.show();
-            this.finish();
-            final RatingBar ratingBarInterne = (RatingBar) mDialog.findViewById(R.id.ratingBar2);
-            Button submit = (Button) mDialog.findViewById(R.id.submit);
-
-            ratingBarInterne.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating,
-                                            boolean fromUser) {
-                    if (rating < 1.0f)
-                        ratingBar.setRating(1.0f);
-                }
-            });
-
-            submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    logement.setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logement.getNoteLogement())) / 2));
-                    ratingBar.setRating(Float.parseFloat(logement.getNoteLogement()));
-                    mDialog.cancel();
-                }
-            });
-
-        }
         else {
             finish();
+            /*vive mob*/
         }
     }
 
