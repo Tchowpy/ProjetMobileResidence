@@ -1,9 +1,11 @@
 package com.example.yougourta.projmob;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.yougourta.projmob.Classes.Utilisateur;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -32,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements
     @Bind(R.id.link_signup) TextView _signupLink;
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     public void login() {
-        Log.d(TAG, "Login");
+
 
         if (!validate()) {
             onLoginFailed();
@@ -73,13 +77,15 @@ public class LoginActivity extends AppCompatActivity implements
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("Connexion...");
         progressDialog.show();
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
+
+
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -91,8 +97,8 @@ public class LoginActivity extends AppCompatActivity implements
                     }
                 }, 3000);
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);*/
     }
 
 
@@ -105,6 +111,8 @@ public class LoginActivity extends AppCompatActivity implements
                 // By default we just finish the Activity and log them in automatically
 
                 //this.finish();
+
+
             }
         }
     }
@@ -117,11 +125,30 @@ public class LoginActivity extends AppCompatActivity implements
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Email ou mot de passe invalide ! ");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
 
         _loginButton.setEnabled(true);
     }
@@ -144,6 +171,31 @@ public class LoginActivity extends AppCompatActivity implements
             valid = false;
         } else {
             _passwordText.setError(null);
+        }
+        if(MainActivity.user1.getEmailUser().equals(email) && MainActivity.user1.getMdpUser().equals(password)){
+
+            MainActivity.estConnecte =true;
+            MainActivity.userConnected = MainActivity.user1;
+            valid = true;
+        }
+        else if(MainActivity.user2.getEmailUser().equals(email) && MainActivity.user2.getMdpUser().equals(password)){
+            MainActivity.estConnecte =true;
+            MainActivity.userConnected = MainActivity.user2;
+            valid = true;
+        }
+        else if(MainActivity.user3.getEmailUser().equals(email) && MainActivity.user3.getMdpUser().equals(password)){
+            MainActivity.estConnecte =true;
+            MainActivity.userConnected = MainActivity.user3;
+            valid = true;
+        }
+        else if(MainActivity.user4.getEmailUser().equals(email) && MainActivity.user4.getMdpUser().equals(password)){
+            MainActivity.estConnecte =true;
+            MainActivity.userConnected = MainActivity.user4;
+            valid = true;
+        }
+        else {
+            _passwordText.setError(null);
+            valid = false;
         }
 
         return valid;

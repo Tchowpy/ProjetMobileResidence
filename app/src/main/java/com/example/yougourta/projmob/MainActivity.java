@@ -1,5 +1,6 @@
 package com.example.yougourta.projmob;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -95,10 +96,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        this.userConnected = user3;
         View hview = navigationView.getHeaderView(0);
-        estConnecte = true;
+
         if(estConnecte ==false){
             navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte,false);
             navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte,false);
@@ -196,12 +195,32 @@ public class MainActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_deconnexion) {
+            estConnecte = false;
+            userConnected = null;
+
+            final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
+                    R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setMessage("Déconnexion...");
+            progressDialog.show();
+
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            // On complete call either onLoginSuccess or onLoginFailed
+                            recreate();
+                            // onLoginFailed();
+                            progressDialog.dismiss();
+                        }
+                    }, 3000);
 
 
         }
         else if (id == R.id.nav_se_connecter) {
 
-
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
