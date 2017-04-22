@@ -212,7 +212,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 if(MainActivity.estConnecte == false){
                     Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
-                    intent1.putExtra("logement",logement);
                     startActivity(intent1);
 
                 }
