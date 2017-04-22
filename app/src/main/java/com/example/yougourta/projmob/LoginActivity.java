@@ -149,6 +149,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         else {
             finish();
+            /*vive mob*/
         }
     }
 
