@@ -1,6 +1,7 @@
 package com.example.yougourta.projmob.Detail;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -46,6 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -68,7 +71,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         @Override
         public void onDateTimeSet(Date date)
         {
-            //Toast.makeText(DetailActivity.this, mFormatter.format(date), Toast.LENGTH_SHORT).show();
 
             /** RECUPERER LA DATE **/
             list.add(new MesRdvListeSingleRow(MainActivity.userConnected.getIdUser(), logement.getTitreLogement(), String.valueOf(date.getDate())+"-"+String.valueOf(date.getMonth())+"-"+String.valueOf(date.getYear()), String.valueOf(date.getHours())+"h"));
@@ -210,13 +212,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             str = str + '\n' + logement.getJoursVisiteLogement().get(i).getJourDispo() + " : " + logement.getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logement.getJoursVisiteLogement().get(i).getHeureFinDispo();
         }
         horaires.setText(str);
-/*vive mob*/
+        /*vive mob*/
 
         noter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(MainActivity.estConnecte == false){
+                if(MainActivity.estConnecte == false)
+                {
                     Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
                     startActivity(intent1);
 
@@ -305,13 +308,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         });
 
 
-
-
         rendezvous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                /*new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
                         .setInitialDate(new Date())
                         //.setMinDate(minDate)
@@ -320,7 +321,46 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                         //.setTheme(SlideDateTimePicker.HOLO_DARK)
                         .setIndicatorColor(Color.parseColor("#7fa87f"))
                         .build()
-                        .show();
+                        .show();*/
+
+                Calendar mcurrentTime = Calendar.getInstance();
+                int mYear = mcurrentTime.get(Calendar.YEAR); // current year
+                int mMonth = mcurrentTime.get(Calendar.MONTH); // current month
+                int mDay = mcurrentTime.get(Calendar.DAY_OF_MONTH); // current day
+                DatePickerDialog mDatePicker;
+                mDatePicker = new DatePickerDialog(DetailActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        // set day of month , month and year value in the edit text
+
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.setTitle("Choisir la Date :");
+
+                mDatePicker.show();
+
+                if (!mDatePicker.isShowing())
+                {
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                    TimePickerDialog mTimePicker;
+
+
+                    mTimePicker = new TimePickerDialog(DetailAnonces.this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            heurerdv.setText("‡   " +selectedHour + "h:" + selectedMinute +"min.");
+
+                        }
+                    }, hour, minute, true);//Yes 24 hour time
+                    mTimePicker.setTitle("Choisir l'horaire:");
+
+                    mTimePicker.show();
+                }
+
+
 
             }
         });
