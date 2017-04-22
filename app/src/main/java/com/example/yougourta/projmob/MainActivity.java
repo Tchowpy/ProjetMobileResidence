@@ -197,14 +197,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mes_demandes_rdv) {
 
-            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("AIT SAADA ", "Villa 15", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("BOURIANE ", "Bungalow 15", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            if(DetailActivity.list != null)
+            if(DetailActivity.rdv != null)
             {
-                list.addAll(DetailActivity.list);
+                list.add(DetailActivity.rdv);
             }
             Intent intent = new Intent(MainActivity.this, ConfirmerRdvs.class);
             intent.putExtra("list", list);

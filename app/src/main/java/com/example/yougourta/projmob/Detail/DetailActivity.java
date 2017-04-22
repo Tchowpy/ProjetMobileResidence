@@ -1,7 +1,11 @@
 package com.example.yougourta.projmob.Detail;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -20,16 +24,19 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
+import com.example.yougourta.projmob.Classes.RendezVous;
 import com.example.yougourta.projmob.LoginActivity;
 import com.example.yougourta.projmob.MainActivity;
 import com.example.yougourta.projmob.NavDrawer.ConfirmerRdvs;
@@ -44,8 +51,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -61,34 +70,21 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private SimpleDateFormat mFormatter = new SimpleDateFormat("MMMM dd yyyy hh:mm aa");
     private Button mButton;
 
-    public static ArrayList<MesRdvListeSingleRow> list;
+    public static MesRdvListeSingleRow rdv;
 
-    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+    String aa = "";
+    String mm = "";
+    String jj = "";
 
-        @Override
-        public void onDateTimeSet(Date date)
-        {
-            //Toast.makeText(DetailActivity.this, mFormatter.format(date), Toast.LENGTH_SHORT).show();
+    String hh = "";
+    String mnt = "";
 
-            /** RECUPERER LA DATE **/
-            list.add(new MesRdvListeSingleRow(MainActivity.userConnected.getIdUser(), logement.getTitreLogement(), String.valueOf(date.getDate())+"-"+String.valueOf(date.getMonth())+"-"+String.valueOf(date.getYear()), String.valueOf(date.getHours())+"h"));
-        }
-
-        // Optional cancel listener
-        @Override
-        public void onDateTimeCancel()
-        {
-            //Toast.makeText(DetailActivity.this,"Annulé", Toast.LENGTH_SHORT).show();
-        }
-    };
-
+    DecimalFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        list = new ArrayList<MesRdvListeSingleRow>();
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
@@ -103,16 +99,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         final Intent intent = getIntent();
         logement = (Logement) intent.getSerializableExtra("appartement");
 
-        /*recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPhotos);
-        recyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        // specify an adapter (see also next example)
-        adapter = new DetailPhotosAdapter(logement.getImages());
-        recyclerView.setAdapter(adapter);*/
 
         final ImageSwitcher imageSwitcher;
         imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
@@ -210,7 +196,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             str = str + '\n' + logement.getJoursVisiteLogement().get(i).getJourDispo() + " : " + logement.getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logement.getJoursVisiteLogement().get(i).getHeureFinDispo();
         }
         horaires.setText(str);
-/*vive mob*/
 
         noter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,24 +289,48 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+        formatter = new DecimalFormat("00");
 
-
-
+        rdv = new MesRdvListeSingleRow();
+        rdv.setNom(MainActivity.userConnected.getIdUser());
+        rdv.setLogement(logement.getTitreLogement());
         rendezvous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                new SlideDateTimePicker.Builder(getSupportFragmentManager())
-                        .setListener(listener)
-                        .setInitialDate(new Date())
-                        //.setMinDate(minDate)
-                        //.setMaxDate(maxDate)
-                        .setIs24HourTime(true)
-                        //.setTheme(SlideDateTimePicker.HOLO_DARK)
-                        .setIndicatorColor(Color.parseColor("#7fa87f"))
-                        .build()
-                        .show();
+                Calendar mcurrentTime = Calendar.getInstance();
+                int mYear = mcurrentTime.get(Calendar.YEAR); // current year
+                int mMonth = mcurrentTime.get(Calendar.MONTH); // current month
+                int mDay = mcurrentTime.get(Calendar.DAY_OF_MONTH); // current day
+                DatePickerDialog mDatePicker;
+                mDatePicker = new DatePickerDialog(DetailActivity.this, R.style.datepicker,new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        aa = String.valueOf(year);
+                        mm = String.valueOf(month);
+                        jj = String.valueOf(dayOfMonth);
+                        rdv.setDate(jj+"-"+ String.format("%02d", month+1)+"-"+aa);
 
+                        Calendar mcurrentTime2 = Calendar.getInstance();
+                        int hour = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
+                        int minute = mcurrentTime2.get(Calendar.MINUTE);
+
+                        TimePickerDialog mTimePicker;
+
+                        mTimePicker = new TimePickerDialog(DetailActivity.this, R.style.datepicker, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                hh = String.valueOf(selectedHour);
+                                mnt = String.valueOf(selectedMinute);
+                                rdv.setHeure(String.format("%02d", selectedHour)+"h"+String.format("%02d", selectedMinute));
+
+                                Toast.makeText(DetailActivity.this, "Demande Envoyée", Toast.LENGTH_SHORT).show();
+                            }
+                        }, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.show();
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.show();
             }
         });
 

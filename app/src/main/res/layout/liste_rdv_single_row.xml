@@ -43,7 +43,7 @@
                 android:layout_marginTop="8dp"
                 android:text="AZRI Nadji"
                 android:textColor="#7fa87f"
-                android:textCursorDrawable="@color/colorPrimary"
+                android:textCursorDrawable="@color/colorPrimary2"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"

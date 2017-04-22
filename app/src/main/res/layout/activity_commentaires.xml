@@ -58,7 +58,7 @@
             android:gravity="center_vertical|center_horizontal"
             android:text="Envoyer"
             android:textColor="#7fa87f"
-            android:textCursorDrawable="@color/colorPrimary"
+            android:textCursorDrawable="@color/colorPrimary2"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>

@@ -19,6 +19,11 @@ public class MesRdvListeSingleRow implements Serializable {
         this.heure = heure;
     }
 
+    public MesRdvListeSingleRow()
+    {
+
+    }
+
     public String getNom() {
         return nom;
     }
