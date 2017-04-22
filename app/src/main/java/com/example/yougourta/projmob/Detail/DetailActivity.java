@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -28,8 +29,10 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.yougourta.projmob.Classes.Logement;
+import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.LoginActivity;
 import com.example.yougourta.projmob.MainActivity;
+import com.example.yougourta.projmob.NavDrawer.ConfirmerRdvs;
 import com.example.yougourta.projmob.R;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
@@ -58,16 +61,17 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private SimpleDateFormat mFormatter = new SimpleDateFormat("MMMM dd yyyy hh:mm aa");
     private Button mButton;
 
+    public static ArrayList<MesRdvListeSingleRow> list;
+
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
         public void onDateTimeSet(Date date)
         {
-            Toast.makeText(DetailActivity.this,
-                    mFormatter.format(date), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(DetailActivity.this, mFormatter.format(date), Toast.LENGTH_SHORT).show();
+
             /** RECUPERER LA DATE **/
-
-
+            list.add(new MesRdvListeSingleRow(MainActivity.userConnected.getIdUser(), logement.getTitreLogement(), String.valueOf(date.getDate())+"-"+String.valueOf(date.getMonth())+"-"+String.valueOf(date.getYear()), String.valueOf(date.getHours())+"h"));
         }
 
         // Optional cancel listener
@@ -83,6 +87,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        list = new ArrayList<MesRdvListeSingleRow>();
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);

@@ -29,7 +29,8 @@ import com.example.yougourta.projmob.Classes.MesRdvEnAttenteSingleRow;
 import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.Classes.Utilisateur;
 
-import com.example.yougourta.projmob.NavDrawer.MesRdvActivity;
+import com.example.yougourta.projmob.Detail.DetailActivity;
+import com.example.yougourta.projmob.NavDrawer.ConfirmerRdvs;
 import com.example.yougourta.projmob.NavDrawer.MesRdvEnAttenteActivity;
 import com.example.yougourta.projmob.TabLayout.AppartementFragment;
 
@@ -40,6 +41,9 @@ import com.example.yougourta.projmob.Classes.Utilisateur;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static ArrayList<MesRdvListeSingleRow> list;
+    public static ArrayList<MesRdvEnAttenteSingleRow> list1;
 
     public static Utilisateur user1;
     public static Utilisateur user2;
@@ -63,6 +67,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        list = new ArrayList<MesRdvListeSingleRow>();
+        list1 = new ArrayList<MesRdvEnAttenteSingleRow>();
 
         user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", 0, false, null);
         user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", 0, false, null);
@@ -171,8 +178,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        ArrayList<MesRdvListeSingleRow> list = new ArrayList<MesRdvListeSingleRow>();
-        ArrayList<MesRdvEnAttenteSingleRow> list1 = new ArrayList<MesRdvEnAttenteSingleRow>();
 
         if (id == R.id.nav_accueil) {
             // Handle the camera action
@@ -193,11 +198,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mes_demandes_rdv) {
 
             list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("AIT SAADA Yougourta", "Villa 15", "17-01-2019", "15h"));
-            list.add(new MesRdvListeSingleRow("BOURIANE Arezki", "Bungalow 15", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("AIT SAADA ", "Villa 15", "17-01-2019", "15h"));
+            list.add(new MesRdvListeSingleRow("BOURIANE ", "Bungalow 15", "17-01-2019", "15h"));
             list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
             list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            Intent intent = new Intent(MainActivity.this, MesRdvActivity.class);
+            list.addAll(DetailActivity.list);
+            Intent intent = new Intent(MainActivity.this, ConfirmerRdvs.class);
             intent.putExtra("list", list);
             startActivity(intent);
 
