@@ -1,7 +1,7 @@
 package com.example.yougourta.projmob.Detail;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    Logement logement;
+    public static Logement logement;
     RatingBar ratingBar;
     ImageButton right;
     ImageButton left;
@@ -72,14 +72,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     public static MesRdvListeSingleRow rdv;
 
-    String aa = "";
-    String mm = "";
-    String jj = "";
+    public static String aa = "";
+    public static String mm = "";
+    public static String jj = "";
 
-    String hh = "";
-    String mnt = "";
+    public static String hh = "";
+    public static String mnt = "";
 
-    DecimalFormat formatter;
+    public static DecimalFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,8 +202,23 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             public void onClick(View v) {
 
                 if(MainActivity.estConnecte == false){
-                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
-                    startActivity(intent1);
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this,R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
+                                    startActivity(intent1);
+                                    dialog.cancel();
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
 
                 }
                 else{
@@ -243,9 +258,24 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onClick(View v) {
                 if(MainActivity.estConnecte==false){
-                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
-                    intent1.putExtra("commentaires", logement.getCommentairesLogement());
-                    startActivity(intent1);
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this,R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
+                                    intent1.putExtra("commentaires", logement.getCommentairesLogement());
+                                    startActivity(intent1);
+                                    dialog.cancel();
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
                 }
                 else{
                     Intent intent = new Intent(DetailActivity.this, CommentairesActivity.class);
@@ -289,49 +319,72 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        formatter = new DecimalFormat("00");
 
-        rdv = new MesRdvListeSingleRow();
-        rdv.setNom(MainActivity.userConnected.getIdUser());
-        rdv.setLogement(logement.getTitreLogement());
 
         rendezvous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Calendar mcurrentTime = Calendar.getInstance();
-                int mYear = mcurrentTime.get(Calendar.YEAR); // current year
-                int mMonth = mcurrentTime.get(Calendar.MONTH); // current month
-                int mDay = mcurrentTime.get(Calendar.DAY_OF_MONTH); // current day
-                DatePickerDialog mDatePicker;
-                mDatePicker = new DatePickerDialog(DetailActivity.this, R.style.datepicker,new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        aa = String.valueOf(year);
-                        mm = String.valueOf(month);
-                        jj = String.valueOf(dayOfMonth);
-                        rdv.setDate(jj+"-"+ String.format("%02d", month+1)+"-"+aa);
+                if(MainActivity.estConnecte == false){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this,R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
 
-                        Calendar mcurrentTime2 = Calendar.getInstance();
-                        int hour = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
-                        int minute = mcurrentTime2.get(Calendar.MINUTE);
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intntnn = new Intent(DetailActivity.this,LoginActivity.class);
+                                    startActivity(intntnn);
+                                    dialog.cancel();
 
-                        TimePickerDialog mTimePicker;
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else
+                {
+                    formatter = new DecimalFormat("00");
 
-                        mTimePicker = new TimePickerDialog(DetailActivity.this, R.style.datepicker, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                hh = String.valueOf(selectedHour);
-                                mnt = String.valueOf(selectedMinute);
-                                rdv.setHeure(String.format("%02d", selectedHour)+"h"+String.format("%02d", selectedMinute));
+                    rdv = new MesRdvListeSingleRow();
+                    rdv.setNom(MainActivity.userConnected.getIdUser());
+                    rdv.setLogement(logement.getTitreLogement());
 
-                                Toast.makeText(DetailActivity.this, "Demande Envoyée", Toast.LENGTH_SHORT).show();
-                            }
-                        }, hour, minute, true);//Yes 24 hour time
-                        mTimePicker.show();
-                    }
-                }, mYear, mMonth, mDay);
-                mDatePicker.show();
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    int mYear = mcurrentTime.get(Calendar.YEAR); // current year
+                    int mMonth = mcurrentTime.get(Calendar.MONTH); // current month
+                    int mDay = mcurrentTime.get(Calendar.DAY_OF_MONTH); // current day
+                    DatePickerDialog mDatePicker;
+                    mDatePicker = new DatePickerDialog(DetailActivity.this, R.style.datepicker,new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            aa = String.valueOf(year);
+                            mm = String.valueOf(month);
+                            jj = String.valueOf(dayOfMonth);
+                            rdv.setDate(jj+"-"+ String.format("%02d", month+1)+"-"+aa);
+
+                            Calendar mcurrentTime2 = Calendar.getInstance();
+                            int hour = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
+                            int minute = mcurrentTime2.get(Calendar.MINUTE);
+
+                            TimePickerDialog mTimePicker;
+
+                            mTimePicker = new TimePickerDialog(DetailActivity.this, R.style.datepicker, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                    hh = String.valueOf(selectedHour);
+                                    mnt = String.valueOf(selectedMinute);
+                                    rdv.setHeure(String.format("%02d", selectedHour)+"h"+String.format("%02d", selectedMinute));
+
+                                    Toast.makeText(DetailActivity.this, "Demande Envoyée", Toast.LENGTH_SHORT).show();
+                                }
+                            }, hour, minute, true);//Yes 24 hour time
+                            mTimePicker.show();
+                        }
+                    }, mYear, mMonth, mDay);
+                    mDatePicker.show();
+                }
             }
         });
 

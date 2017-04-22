@@ -1,7 +1,9 @@
 package com.example.yougourta.projmob;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +14,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.yougourta.projmob.Classes.Commentaire;
 import com.example.yougourta.projmob.Classes.Logement;
+import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.Classes.Utilisateur;
 import com.example.yougourta.projmob.Detail.CommentairesActivity;
 import com.example.yougourta.projmob.Detail.DetailActivity;
@@ -27,10 +32,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.example.yougourta.projmob.Detail.DetailActivity.jj;
 
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener,
@@ -57,7 +66,6 @@ public class LoginActivity extends AppCompatActivity implements
 
         Intent itnt = getIntent();
         commentaires = (ArrayList<Commentaire>) itnt.getSerializableExtra("commentaires");
-
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -147,6 +155,7 @@ public class LoginActivity extends AppCompatActivity implements
             finish();
         }
 
+
         else {
             finish();
             /*vive mob*/
@@ -156,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void onLoginFailed() {
 
 
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this,R.style.datepicker);
         builder1.setMessage("Email ou mot de passe invalide ! ");
         builder1.setCancelable(true);
 
@@ -167,9 +176,6 @@ public class LoginActivity extends AppCompatActivity implements
                         dialog.cancel();
                     }
                 });
-
-
-
         AlertDialog alert11 = builder1.create();
         alert11.show();
 
