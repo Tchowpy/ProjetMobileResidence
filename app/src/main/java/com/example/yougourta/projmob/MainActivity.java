@@ -202,7 +202,10 @@ public class MainActivity extends AppCompatActivity
             list.add(new MesRdvListeSingleRow("BOURIANE ", "Bungalow 15", "17-01-2019", "15h"));
             list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
             list.add(new MesRdvListeSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            list.addAll(DetailActivity.list);
+            if(DetailActivity.list != null)
+            {
+                list.addAll(DetailActivity.list);
+            }
             Intent intent = new Intent(MainActivity.this, ConfirmerRdvs.class);
             intent.putExtra("list", list);
             startActivity(intent);
