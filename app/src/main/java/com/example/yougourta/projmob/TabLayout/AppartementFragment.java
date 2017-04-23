@@ -1,39 +1,121 @@
 package com.example.yougourta.projmob.TabLayout;
 
+import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.example.yougourta.projmob.Classes.Commentaire;
 import com.example.yougourta.projmob.Classes.Disponibilite;
 import com.example.yougourta.projmob.Classes.Logement;
+import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
+import com.example.yougourta.projmob.Detail.CommentairesActivity;
 import com.example.yougourta.projmob.Detail.DetailActivity;
 import com.example.yougourta.projmob.ListeLogements.LogementsAdapter;
 import com.example.yougourta.projmob.ListeLogements.RecyclerItemClickListener;
+import com.example.yougourta.projmob.LoginActivity;
 import com.example.yougourta.projmob.MainActivity;
 import com.example.yougourta.projmob.R;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
  * Created by Nadji AZRI on 24/03/2017.
  */
 
-public class AppartementFragment extends Fragment {
+public class AppartementFragment extends Fragment implements OnMapReadyCallback{
 
     ArrayList<Logement> logements = new ArrayList<Logement>();
     ArrayList<Logement> logementsNew = new ArrayList<Logement>();
+
+    View masterView;
+
+    RatingBar ratingBar;
+    ImageButton right;
+    ImageButton left;
+    int cpt = 0;
+    private GoogleMap mMap;
+    private SimpleDateFormat mFormatter = new SimpleDateFormat("MMMM dd yyyy hh:mm aa");
+    private Button mButton;
+
+    public static MesRdvListeSingleRow rdv;
+
+    public static String aa = "";
+    public static String mm = "";
+    public static String jj = "";
+
+    public static String hh = "";
+    public static String mnt = "";
+
+    public static DecimalFormat formatter;
+
+    int pos=0;
+
+    ImageSwitcher imageSwitcher;
+
+    TextView prix;
+    TextView titre;
+    TextView adresse;
+    TextView nb_chambres;
+    TextView surface;
+    TextView detail;
+    TextView horaires;
+    TextView carre;
+
+    ImageButton noter;
+    ImageButton commentaire;
+
+    ImageButton appel;
+    ImageButton email;
+    ImageButton rendezvous;
 
     @Nullable
     @Override
@@ -43,6 +125,13 @@ public class AppartementFragment extends Fragment {
 
         appartement(view);
 
+        if (isTwoPane(view))
+        {
+            SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction().replace(R.id.fragment2, mapFragment).commit();
+            mapFragment.getMapAsync(this);
+        }
+
         return view;
     }
 
@@ -51,6 +140,21 @@ public class AppartementFragment extends Fragment {
         final RecyclerView recyclerView;
         final RecyclerView.Adapter adapter;
         RecyclerView.LayoutManager layoutManager;
+
+        if (isTwoPane(view))
+        {
+            imageSwitcher = (ImageSwitcher) view.findViewById(R.id.imageSwitcher);
+
+            imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+                @Override
+                public View makeView() {
+                    ImageView myView = new ImageView(getContext());
+                    myView.setScaleX(2.0f);
+                    myView.setScaleY(2.0f);
+                    return myView;
+                }
+            });
+        }
 
         /** Commentaires **/
         //ArrayList de commentaires
@@ -170,11 +274,59 @@ public class AppartementFragment extends Fragment {
         adapter = new LogementsAdapter(logements);
         recyclerView.setAdapter(adapter);
 
+        masterView = view;
+
+        if (isTwoPane(view))
+        {
+            prix = (TextView) view.findViewById(R.id.prix);
+            titre = (TextView) view.findViewById(R.id.titre);
+            adresse = (TextView) view.findViewById(R.id.adresse);
+            nb_chambres = (TextView) masterView.findViewById(R.id.nb_chambres);
+            surface = (TextView) masterView.findViewById(R.id.surface);
+            detail = (TextView) masterView.findViewById(R.id.detail);
+            horaires = (TextView) masterView.findViewById(R.id.horaires);
+            carre = (TextView)masterView.findViewById(R.id.carre);
+
+            noter = (ImageButton) masterView.findViewById(R.id.note);
+            commentaire = (ImageButton) masterView.findViewById(R.id.commentaires);
+
+            appel = (ImageButton) masterView.findViewById(R.id.appel);
+            email = (ImageButton) masterView.findViewById(R.id.email);
+            rendezvous = (ImageButton) masterView.findViewById(R.id.rendezvous);
+
+
+            ratingBar = (RatingBar) masterView.findViewById(R.id.ratingBar);
+
+            insertView(0);
+        }
+
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new   RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        createIntent(position);
+                        if(isTwoPane(masterView))
+                        {
+                            pos = position;
+
+                            LatLng sydney = new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude());
+                            mMap.addMarker(new MarkerOptions().position(sydney).title(logements.get(pos).getTitreLogement()));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                            mMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
+                                    .zoom(17)                   // Sets the zoom
+                                    .bearing(90)                // Sets the orientation of the camera to east
+                                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                                    .build();                   // Creates a CameraPosition from the builder
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                            insertView(position);
+                        }
+                        else
+                        {
+                            createIntent(position);
+                        }
                     }
                 })
         );
@@ -233,4 +385,292 @@ public class AppartementFragment extends Fragment {
         startActivity(intent);
     }
 
+    public boolean isTwoPane(View v)
+    {
+        View view = v.findViewById(R.id.fragment1);
+        return (view != null);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude());
+        mMap.addMarker(new MarkerOptions().position(sydney).title(logements.get(pos).getTitreLogement()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+
+
+    public void insertView(int position)
+    {
+        carre.setText(Html.fromHtml("m<sup>2</sup>"));
+
+        prix.setText(logements.get(position).getPrixLogement());
+
+        imageSwitcher.setImageResource(logements.get(pos).getImages().get(0));
+
+
+        final Animation in = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
+        imageSwitcher.setInAnimation(in);
+        imageSwitcher.setOutAnimation(out);
+
+        right = (ImageButton) masterView.findViewById(R.id.imageButtonRight);
+        left = (ImageButton) masterView.findViewById(R.id.imageButtonLeft);
+
+        left.setVisibility(View.INVISIBLE);
+
+        right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cpt++;
+                if (cpt >= logements.get(pos).getImages().size()) {
+                    right.setVisibility(View.INVISIBLE);
+                } else {
+                    imageSwitcher.setImageResource(logements.get(pos).getImages().get(cpt));
+                }
+
+                if (cpt > -1) {
+                    left.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cpt--;
+                if (cpt <= -1) {
+                    left.setVisibility(View.INVISIBLE);
+                    right.setVisibility(View.VISIBLE);
+                } else {
+                    imageSwitcher.setImageResource(logements.get(pos).getImages().get(cpt));
+                }
+
+                if (cpt < logements.get(pos).getImages().size()) {
+                    right.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        float noteFinale;
+
+        ratingBar.setRating(Float.parseFloat(logements.get(position).getNoteLogement()));
+        titre.setText(logements.get(position).getTitreLogement() + " " + logements.get(position).getTypeLogement() + " à louer.");
+        adresse.setText(logements.get(position).getAdrLogement());
+        nb_chambres.setText(logements.get(position).getNb_chambreLogement());
+        surface.setText(logements.get(position).getSurfaceLogement());
+        detail.setText(logements.get(position).getDetailLogement());
+
+        String str = logements.get(position).getJoursVisiteLogement().get(0).getJourDispo() + " : " + logements.get(position).getJoursVisiteLogement().get(0).getHeureDebutDispo() + " - " + logements.get(position).getJoursVisiteLogement().get(0).getHeureFinDispo();
+        for (int i = 1; i < logements.get(position).getJoursVisiteLogement().size(); i++) {
+            str = str + '\n' + logements.get(position).getJoursVisiteLogement().get(i).getJourDispo() + " : " + logements.get(position).getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logements.get(position).getJoursVisiteLogement().get(i).getHeureFinDispo();
+        }
+        horaires.setText(str);
+
+        noter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(MainActivity.estConnecte == false)
+                {
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(),R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent1 = new Intent(getContext(), LoginActivity.class);
+                                    startActivity(intent1);
+                                    dialog.cancel();
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+
+                }
+                else{
+                    final Dialog mDialog = new Dialog(getContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
+
+                    mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    mDialog.setContentView(R.layout.activity_rating);
+                    mDialog.show();
+
+                    final RatingBar ratingBarInterne = (RatingBar) mDialog.findViewById(R.id.ratingBar2);
+                    Button submit = (Button) mDialog.findViewById(R.id.submit);
+
+                    ratingBarInterne.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                        @Override
+                        public void onRatingChanged(RatingBar ratingBar, float rating,
+                                                    boolean fromUser) {
+                            if (rating < 1.0f)
+                                ratingBar.setRating(1.0f);
+                        }
+                    });
+
+                    submit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            logements.get(pos).setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logements.get(pos).getNoteLogement())) / 2));
+                            ratingBar.setRating(Float.parseFloat(logements.get(pos).getNoteLogement()));
+                            mDialog.cancel();
+                        }
+                    });
+                }
+
+            }
+        });
+
+        commentaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.estConnecte==false){
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(),R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent1 = new Intent(getContext(), LoginActivity.class);
+                                    intent1.putExtra("commentaires", logements.get(pos).getCommentairesLogement());
+                                    startActivity(intent1);
+                                    dialog.cancel();
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else{
+                    Intent intent = new Intent(getContext(), CommentairesActivity.class);
+                    intent.putExtra("commentaires", logements.get(pos).getCommentairesLogement());
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+        appel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:"+logements.get(pos).getProprietaireLogement().getTelUser()));
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(callIntent);
+
+            }
+        });
+
+
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{logements.get(pos).getProprietaireLogement().getEmailUser()});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, logements.get(pos).getTitreLogement()+" "+logements.get(pos).getTypeLogement());
+
+                try
+                {
+                    startActivity(Intent.createChooser(emailIntent, "Envoyer un mail..."));
+                    //finish();
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getContext(), "Aucune application Mail installée.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+        rendezvous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(MainActivity.estConnecte == false){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(),R.style.datepicker);
+                    builder1.setMessage("Vous devez vous connecter !");
+                    builder1.setCancelable(true);
+
+                    builder1.setPositiveButton(
+                            "Se connecter",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intntnn = new Intent(getContext(),LoginActivity.class);
+                                    startActivity(intntnn);
+                                    dialog.cancel();
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else
+                {
+                    formatter = new DecimalFormat("00");
+
+                    rdv = new MesRdvListeSingleRow();
+                    rdv.setNom(MainActivity.userConnected.getIdUser());
+                    rdv.setLogement(logements.get(pos).getTitreLogement());
+
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    int mYear = mcurrentTime.get(Calendar.YEAR); // current year
+                    int mMonth = mcurrentTime.get(Calendar.MONTH); // current month
+                    int mDay = mcurrentTime.get(Calendar.DAY_OF_MONTH); // current day
+                    DatePickerDialog mDatePicker;
+                    mDatePicker = new DatePickerDialog(getContext(), R.style.datepicker,new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            aa = String.valueOf(year);
+                            mm = String.valueOf(month);
+                            jj = String.valueOf(dayOfMonth);
+                            rdv.setDate(jj+"-"+ String.format("%02d", month+1)+"-"+aa);
+
+                            Calendar mcurrentTime2 = Calendar.getInstance();
+                            int hour = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
+                            int minute = mcurrentTime2.get(Calendar.MINUTE);
+
+                            TimePickerDialog mTimePicker;
+
+                            mTimePicker = new TimePickerDialog(getContext(), R.style.datepicker, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                    hh = String.valueOf(selectedHour);
+                                    mnt = String.valueOf(selectedMinute);
+                                    rdv.setHeure(String.format("%02d", selectedHour)+"h"+String.format("%02d", selectedMinute));
+
+                                    Toast.makeText(getContext(), "Demande Envoyée", Toast.LENGTH_SHORT).show();
+                                }
+                            }, hour, minute, true);//Yes 24 hour time
+                            mTimePicker.show();
+                        }
+                    }, mYear, mMonth, mDay);
+                    mDatePicker.show();
+                }
+            }
+        });
+    }
 }

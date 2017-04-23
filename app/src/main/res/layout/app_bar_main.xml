@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yougourta.takrirkhibra.MainActivity">
+    tools:context="com.example.yougourta.projmob.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -24,7 +24,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteTextView"
@@ -34,7 +35,8 @@
                     android:hint="Region "
                     android:textColor="#FFFFFF"
                     android:theme="@style/AppTheme.AppBarOverlay2"
-                    android:textColorHint="#8bffffff">
+                    android:textColorHint="#8bffffff"
+                    android:layout_marginLeft="24dp">
                     <requestFocus />
                 </AutoCompleteTextView>
             </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -29,6 +30,11 @@ public class CommentairesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         commentaires = (ArrayList<Commentaire>) intent.getSerializableExtra("commentaires");
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Commentaires");
 
         listView = (ListView)findViewById(R.id.listView);
         adapter = new commentaireAdapter(commentaires);

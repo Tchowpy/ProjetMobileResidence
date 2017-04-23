@@ -38,6 +38,7 @@ public class ConfirmerRdvs extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Rendez-Vous");
 
         mRecyclerView = (SWRecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.getSwipeMessageBuilder()

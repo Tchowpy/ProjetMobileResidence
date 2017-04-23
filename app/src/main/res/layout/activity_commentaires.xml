@@ -8,6 +8,11 @@
     android:background="#e9ebee"
     tools:context="com.example.yougourta.projmob.Detail.CommentairesActivity">
 
+    <include
+        layout="@layout/toolbar_dyalna"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="0dp"

@@ -30,6 +30,7 @@ public class MesRdvEnAttenteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("En attente");
 
         listView = (ListView) findViewById(R.id.mes_rdv_en_attente_liste_view);
 

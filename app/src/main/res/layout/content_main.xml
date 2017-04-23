@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.yougourta.takrirkhibra.MainActivity"
+    tools:context="com.example.yougourta.projmob.MainActivity"
     tools:showIn="@layout/app_bar_main"
     android:orientation="vertical">
 
@@ -16,17 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/toolBarColor"
-        app:tabGravity="center"
+        android:layout_gravity="center_horizontal"
         app:tabIndicatorColor="#ffffff"
-        app:tabMode="scrollable"
         app:tabSelectedTextColor="@android:color/white"
         app:tabTextAppearance="@style/TextAppearance.AppCompat.Button"
-        app:tabTextColor="@color/whiteColor" />
+        app:tabTextColor="@color/whiteColor"
+        app:tabGravity="center"
+        app:tabMode="scrollable"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#e9ebee"/>
+        android:background="#e9ebee" />
 
 </LinearLayout>

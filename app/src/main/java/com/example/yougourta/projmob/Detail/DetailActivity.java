@@ -1,6 +1,7 @@
 package com.example.yougourta.projmob.Detail;
 
 import android.Manifest;
+import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -19,8 +20,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -84,12 +87,23 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Display d = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int screenWidth = (int)(d.getWidth());
+
+        Log.d("-----------", String.valueOf(screenWidth));
+        if(screenWidth > 1200)
+        {
+            Intent intent = new Intent(DetailActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_detail);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setTitle("Détail");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -289,14 +303,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         appel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:"+logement.getProprietaireLogement().getTelUser()));
-                if (ActivityCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                {
                     return;
                 }
                 startActivity(callIntent);
-
             }
         });
 
@@ -349,7 +362,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
                     rdv = new MesRdvListeSingleRow();
                     rdv.setNom(MainActivity.userConnected.getIdUser());
-                    rdv.setLogement(logement.getTitreLogement());
+                    rdv.setLogement(logement.getTitreLogement() + " " + logement.getTypeLogement());
 
                     Calendar mcurrentTime = Calendar.getInstance();
                     int mYear = mcurrentTime.get(Calendar.YEAR); // current year
