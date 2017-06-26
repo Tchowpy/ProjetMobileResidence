@@ -8,26 +8,35 @@ import java.util.ArrayList;
  */
 
 public class Logement implements Serializable{
-    private String titreLogement;
-    private String prixLogement;
-    private String typeLogement;
-    private String surfaceLogement;
-    private String nb_chambreLogement;
-    private String adrLogement;
-    private String detailLogement;
+    private long idLogement;
+
+    private String titreLogement;//
+    private String prixLogement;//
+    private String typeLogement;//
+    private String surfaceLogement;//
+    private String nb_chambreLogement;//
+    private String adrLogement;//
+    private String detailLogement;//
 
 
-    private double latitude;
-    private double longetude;
+    private double latitude;//
+    private double longetude;//
 
-    private ArrayList<Disponibilite> joursVisiteLogement;
-    private ArrayList<Integer> images;
+    private ArrayList<Disponibilite> joursVisiteLogement; //table disponibilites
+    private ArrayList<Integer> images; //table images
 
-    private Utilisateur proprietaireLogement;
-    private String noteLogement;
-    private ArrayList<Commentaire> commentairesLogement;
+    private Utilisateur proprietaireLogement;//
+    private String noteLogement;//table note
+    private ArrayList<Commentaire> commentairesLogement; //table commentaires
     private String etatLogement;
     private String nbVuesLogement;
+
+    private String mainImg;
+
+    public Logement()
+    {
+
+    }
 
     public Logement(String titreLogement, String prixLogement, String typeLogement, String surfaceLogement, String nb_chambreLogement, String adrLogement, String detailLogement, double latitude, double longetude, ArrayList<Disponibilite> joursVisiteLogement, ArrayList<Integer> images, Utilisateur proprietaireLogement, String noteLogement, ArrayList<Commentaire> commentairesLogement, String etatLogement, String nbVuesLogement) {
         this.titreLogement = titreLogement;
@@ -46,6 +55,22 @@ public class Logement implements Serializable{
         this.commentairesLogement = commentairesLogement;
         this.etatLogement = etatLogement;
         this.nbVuesLogement = nbVuesLogement;
+    }
+
+    public long getIdLogement() {
+        return idLogement;
+    }
+
+    public void setIdLogement(long idLogement) {
+        this.idLogement = idLogement;
+    }
+
+    public String getMainImg() {
+        return mainImg;
+    }
+
+    public void setMainImg(String mainImg) {
+        this.mainImg = mainImg;
     }
 
     public String getTitreLogement() {

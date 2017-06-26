@@ -1,5 +1,6 @@
 package com.example.yougourta.projmob.ListeLogements;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,10 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.StringLoader;
 import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.R;
+import com.example.yougourta.projmob.TabLayout.AppartementFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yougourta on 3/23/17.
@@ -18,7 +23,8 @@ import java.util.ArrayList;
 
 public class LogementsAdapter extends RecyclerView.Adapter<LogementsAdapter.ViewHolder> {
 
-    private ArrayList<Logement> logements;
+    private List<Logement> logements;
+    private Context ctx;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -39,8 +45,9 @@ public class LogementsAdapter extends RecyclerView.Adapter<LogementsAdapter.View
         }
     }
 
-    public LogementsAdapter(ArrayList<Logement> logements) {
+    public LogementsAdapter(List<Logement> logements, Context context) {
         this.logements = logements;
+        this.ctx = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -64,7 +71,8 @@ public class LogementsAdapter extends RecyclerView.Adapter<LogementsAdapter.View
         holder.prix.setText(String.valueOf(logements.get(position).getPrixLogement())+" Da/Mois");
         holder.surface.setText(logements.get(position).getTitreLogement()+", "+logements.get(position).getTypeLogement()+", "+String.valueOf(logements.get(position).getSurfaceLogement())+" m2");
         holder.adresse.setText(logements.get(position).getAdrLogement());
-        holder.imageView.setImageResource(logements.get(position).getImages().get(0));
+        //holder.imageView.setImageResource(logements.get(position).getImages().get(0));
+        Glide.with(ctx).load("http://192.168.43.76:8888/MAMP/images/ProjMob/"+String.valueOf(logements.get(position).getIdLogement())+"/"+parametreImage()+"/"+logements.get(position).getMainImg()).skipMemoryCache(true).into(holder.imageView);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -72,4 +80,12 @@ public class LogementsAdapter extends RecyclerView.Adapter<LogementsAdapter.View
     public int getItemCount() {
         return logements.size();
     }
+
+
+    public String parametreImage()
+    {
+        return "drawable-xhdpi";
+    }
 }
+
+

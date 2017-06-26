@@ -39,6 +39,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.yougourta.projmob.Classes.Commentaire;
 import com.example.yougourta.projmob.Classes.Disponibilite;
 import com.example.yougourta.projmob.Classes.Logement;
@@ -60,11 +65,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -73,9 +83,11 @@ import java.util.Calendar;
 
 public class AppartementFragment extends Fragment implements OnMapReadyCallback{
 
-    ArrayList<Logement> logements = new ArrayList<Logement>();
-    ArrayList<Logement> logementsNew = new ArrayList<Logement>();
+    int resultat = 0;
 
+    //ArrayList<Logement> logements = new ArrayList<Logement>();
+    ArrayList<Logement> logementsNew = new ArrayList<Logement>();
+    List<Logement> logementList;
     View masterView;
 
     RatingBar ratingBar;
@@ -117,6 +129,14 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
     ImageButton email;
     ImageButton rendezvous;
 
+    String url="http://192.168.43.76:8080/getget";
+
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+    RecyclerView.LayoutManager layoutManager;
+
+    View view;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,12 +155,9 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
         return view;
     }
 
-    public void appartement(View view)
+    public void appartement(View v)
     {
-        final RecyclerView recyclerView;
-        final RecyclerView.Adapter adapter;
-        RecyclerView.LayoutManager layoutManager;
-
+        view = v;
         if (isTwoPane(view))
         {
             imageSwitcher = (ImageSwitcher) view.findViewById(R.id.imageSwitcher);
@@ -155,17 +172,19 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                 }
             });
         }
-
         /** Commentaires **/
         //ArrayList de commentaires
+        /*
         ArrayList<Commentaire> commentaire1 = new ArrayList<Commentaire>();
         ArrayList<Commentaire> commentaire2 = new ArrayList<Commentaire>();
         ArrayList<Commentaire> commentaire3 = new ArrayList<Commentaire>();
         ArrayList<Commentaire> commentaire4 = new ArrayList<Commentaire>();
         ArrayList<Commentaire> commentaire5 = new ArrayList<Commentaire>();
         ArrayList<Commentaire> commentaire6 = new ArrayList<Commentaire>();
+        */
 
         //Remplissage des commentaires
+        /*
         commentaire1.add(new Commentaire(MainActivity.user3, "Appartement nul, vraiment déguelasse... mais il est bien situé si vous songez à le réaménager !"));
         commentaire1.add(new Commentaire(MainActivity.user4, "Dommage que ça soit un F3"));
         commentaire1.add(new Commentaire(MainActivity.user3, "Exactement En plus c'est un F3, franchment .."));
@@ -199,11 +218,12 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
         commentaire6.add(new Commentaire(MainActivity.user4, "Dommage que ça soit un F3"));
         commentaire6.add(new Commentaire(MainActivity.user3, "Super spacieux"));
         commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique"));
-
+        */
 
         /** IMAGES **/
 
         //ArrayList d'Images pour chaque appartement
+        /*
         ArrayList<Integer> images1 = new ArrayList<Integer>();
         images1.add(R.drawable.ic_a);
         images1.add(R.drawable.ic_b);
@@ -224,12 +244,12 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
 
         ArrayList<Integer> images6 = new ArrayList<Integer>();
         images6.add(R.drawable.ic_f);
-
+        */
 
         /** DISPONIBILITE **/
 
-        //Creéation d'un ensemble de jourDispo
-        Disponibilite disponibilite1 = new Disponibilite("Mardi", "15h", "16h");
+        /**Creéation d'un ensemble de jourDispo**/
+        /*Disponibilite disponibilite1 = new Disponibilite("Mardi", "15h", "16h");
         Disponibilite disponibilite2 = new Disponibilite("Samedi", "9h", "12h");
         Disponibilite disponibilite3 = new Disponibilite("Jeudi", "18h", "19h");
         Disponibilite disponibilite4 = new Disponibilite("Vendredi", "16h", "18h");
@@ -238,19 +258,21 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
         ArrayList<Disponibilite> disponibilites = new ArrayList<Disponibilite>();
         disponibilites.add(disponibilite1);
         disponibilites.add(disponibilite3);
-        disponibilites.add(disponibilite4);
+        disponibilites.add(disponibilite4);*/
 
         /** LOGEMENTS **/
 
-        //Création d'un ensemble de logements
+        /**Création d'un ensemble de logements**/
+        /*
         Logement logement1 = new Logement("Appartement","80, 000", "F3", "98", "2", "Bejaia", "     Appartement pour location, bonne localisation, citée calme avec un voisinage superbe." +'\n'+'\n'+"Appartement pour location, bonne localisation, citée calme avec un voisinage superbe. Il vous apportera lux et confort et plei nde bla bla bla, oui j'écris ça juste pour remplire.", 36.735160, 5.0469151, disponibilites, images1, MainActivity.user4, "3.4", commentaire1, "Libre", "13");
         Logement logement2 = new Logement("Appartement","43, 000", "F4", "221", "3", "Bejaia", "Appartement pour location, bonne localisation", 36.761015, 5.056305, disponibilites, images2, MainActivity.user3, "3.4", commentaire2, "Loué", "43");
         Logement logement3 = new Logement("Appartement","21, 000", "F2", "438", "1", "Bejaia", "Appartement pour location, bonne localisation", 36.751141, 5.0557437, disponibilites, images3, MainActivity.user3, "3.4", commentaire3, "Libre", "103");
         Logement logement4 = new Logement("Appartement","33, 000", "F4", "354", "3", "Bejaia", "Appartement pour location, bonne localisation", 36.753199, 5.034329, disponibilites, images4, MainActivity.user4, "3.4", commentaire4, "Loué", "213");
         Logement logement5 = new Logement("Appartement","54, 000", "F3", "230", "2", "Bejaia", "Appartement pour location, bonne localisation", 36.739379, 5.062149, disponibilites, images5, MainActivity.user2, "3.4", commentaire5, "Loué", "113");
         Logement logement6 = new Logement("Appartement","28, 000", "F3", "196", "2", "Ben Aknoun", "Appartement pour location, bonne localisation", 36.741457, 5.045203, disponibilites, images6, MainActivity.user1, "3.4", commentaire6, "Libre", "413");
-
-        //ArrayList de logements
+        */
+        /**ArrayList de logements**/
+        /*
         logements.add(logement1);
         logements.add(logement2);
         logements.add(logement3);
@@ -259,129 +281,145 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
         logements.add(logement6);
 
         logementsNew.addAll(logements);
+        */
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewAppartement);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        // specify an adapter (see also next example)
-        adapter = new LogementsAdapter(logements);
-        recyclerView.setAdapter(adapter);
-
-        masterView = view;
-
-        if (isTwoPane(view))
+        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>()
         {
-            prix = (TextView) view.findViewById(R.id.prix);
-            titre = (TextView) view.findViewById(R.id.titre);
-            adresse = (TextView) view.findViewById(R.id.adresse);
-            nb_chambres = (TextView) masterView.findViewById(R.id.nb_chambres);
-            surface = (TextView) masterView.findViewById(R.id.surface);
-            detail = (TextView) masterView.findViewById(R.id.detail);
-            horaires = (TextView) masterView.findViewById(R.id.horaires);
-            carre = (TextView)masterView.findViewById(R.id.carre);
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                logementList = Arrays.asList(gson.fromJson(jsonArray.toString(), Logement[].class));
+                recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewAppartement);
 
-            noter = (ImageButton) masterView.findViewById(R.id.note);
-            commentaire = (ImageButton) masterView.findViewById(R.id.commentaires);
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                recyclerView.setHasFixedSize(true);
 
-            appel = (ImageButton) masterView.findViewById(R.id.appel);
-            email = (ImageButton) masterView.findViewById(R.id.email);
-            rendezvous = (ImageButton) masterView.findViewById(R.id.rendezvous);
+                // use a linear layout manager
+                layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+
+                // specify an adapter (see also next example)
+                adapter = new LogementsAdapter(logementList, getActivity().getApplicationContext());
+                recyclerView.setAdapter(adapter);
+
+                masterView = view;
+
+                /*if (isTwoPane(view))
+                {
+                    prix = (TextView) view.findViewById(R.id.prix);
+                    titre = (TextView) view.findViewById(R.id.titre);
+                    adresse = (TextView) view.findViewById(R.id.adresse);
+                    nb_chambres = (TextView) masterView.findViewById(R.id.nb_chambres);
+                    surface = (TextView) masterView.findViewById(R.id.surface);
+                    detail = (TextView) masterView.findViewById(R.id.detail);
+                    horaires = (TextView) masterView.findViewById(R.id.horaires);
+                    carre = (TextView)masterView.findViewById(R.id.carre);
+
+                    noter = (ImageButton) masterView.findViewById(R.id.note);
+                    commentaire = (ImageButton) masterView.findViewById(R.id.commentaires);
+
+                    appel = (ImageButton) masterView.findViewById(R.id.appel);
+                    email = (ImageButton) masterView.findViewById(R.id.email);
+                    rendezvous = (ImageButton) masterView.findViewById(R.id.rendezvous);
 
 
-            ratingBar = (RatingBar) masterView.findViewById(R.id.ratingBar);
+                    ratingBar = (RatingBar) masterView.findViewById(R.id.ratingBar);
 
-            insertView(0);
-        }
+                    insertView(0);
+                }*/
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(), new   RecyclerItemClickListener.OnItemClickListener() {
+                recyclerView.addOnItemTouchListener(
+                        new RecyclerItemClickListener(getActivity(), new   RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                if(isTwoPane(masterView))
+                                {
+                                    pos = position;
+
+                                    LatLng sydney = new LatLng(logementList.get(pos).getLatitude(), logementList.get(pos).getLongetude());
+                                    mMap.addMarker(new MarkerOptions().position(sydney).title(logementList.get(pos).getTitreLogement()));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                                    mMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+                                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                                            .target(new LatLng(logementList.get(pos).getLatitude(), logementList.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
+                                            .zoom(17)                   // Sets the zoom
+                                            .bearing(90)                // Sets the orientation of the camera to east
+                                            .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                                            .build();                   // Creates a CameraPosition from the builder
+                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                    insertView(position);
+                                }
+                                else
+                                {
+                                    createIntent(position);
+                                }
+                            }
+                        })
+                );
+
+                MainActivity.actv.clearFocus();
+
+                MainActivity.actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View view, int position) {
-                        if(isTwoPane(masterView))
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        int i = 0;
+                        while (i < logementList.size())
                         {
-                            pos = position;
-
-                            LatLng sydney = new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude());
-                            mMap.addMarker(new MarkerOptions().position(sydney).title(logements.get(pos).getTitreLogement()));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-                            mMap.animateCamera(CameraUpdateFactory.zoomIn());
-
-                            CameraPosition cameraPosition = new CameraPosition.Builder()
-                                    .target(new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
-                                    .zoom(17)                   // Sets the zoom
-                                    .bearing(90)                // Sets the orientation of the camera to east
-                                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
-                                    .build();                   // Creates a CameraPosition from the builder
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                            insertView(position);
+                            if (!logementList.get(i).getAdrLogement().equals(MainActivity.actv.getText().toString()))
+                            {
+                                logementList.remove(i);
+                                adapter.notifyItemRemoved(i);
+                            }
+                            else
+                            {
+                                i++;
+                            }
                         }
-                        else
+
+                    }
+                });
+
+
+                MainActivity.actv.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (String.valueOf(s).isEmpty())
                         {
-                            createIntent(position);
+                            logementList.clear();
+                            logementList.addAll(logementsNew);
+                            adapter.notifyDataSetChanged();
                         }
                     }
-                })
-        );
 
-        MainActivity.actv.clearFocus();
+                    @Override
+                    public void afterTextChanged(Editable s) {
 
-        MainActivity.actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    }
+                });
+            }
+        }, new Response.ErrorListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int i = 0;
-                while (i < logements.size())
-                {
-                    if (!logements.get(i).getAdrLogement().equals(MainActivity.actv.getText().toString()))
-                    {
-                        logements.remove(i);
-                        adapter.notifyItemRemoved(i);
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
-
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity().getApplicationContext(), "Une erreur s'est produite", Toast.LENGTH_SHORT).show();
             }
         });
 
-
-        MainActivity.actv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (String.valueOf(s).isEmpty())
-                {
-                    logements.clear();
-                    logements.addAll(logementsNew);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
+        queue.add(request);
     }
 
     public void createIntent(int position)
     {
         Intent intent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-        intent.putExtra("appartement", logements.get(position));
+        intent.putExtra("appartement", logementList.get(position));
         startActivity(intent);
     }
 
@@ -396,13 +434,13 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude());
-        mMap.addMarker(new MarkerOptions().position(sydney).title(logements.get(pos).getTitreLogement()));
+        LatLng sydney = new LatLng(logementList.get(pos).getLatitude(), logementList.get(pos).getLongetude());
+        mMap.addMarker(new MarkerOptions().position(sydney).title(logementList.get(pos).getTitreLogement()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(logements.get(pos).getLatitude(), logements.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
+                .target(new LatLng(logementList.get(pos).getLatitude(), logementList.get(pos).getLongetude()))      // Sets the center of the map to Mountain View
                 .zoom(17)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
@@ -416,9 +454,9 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
     {
         carre.setText(Html.fromHtml("m<sup>2</sup>"));
 
-        prix.setText(logements.get(position).getPrixLogement());
+        prix.setText(logementList.get(position).getPrixLogement());
 
-        imageSwitcher.setImageResource(logements.get(pos).getImages().get(0));
+        imageSwitcher.setImageResource(logementList.get(pos).getImages().get(0));
 
 
         final Animation in = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
@@ -435,10 +473,10 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
             @Override
             public void onClick(View v) {
                 cpt++;
-                if (cpt >= logements.get(pos).getImages().size()) {
+                if (cpt >= logementList.get(pos).getImages().size()) {
                     right.setVisibility(View.INVISIBLE);
                 } else {
-                    imageSwitcher.setImageResource(logements.get(pos).getImages().get(cpt));
+                    imageSwitcher.setImageResource(logementList.get(pos).getImages().get(cpt));
                 }
 
                 if (cpt > -1) {
@@ -455,10 +493,10 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                     left.setVisibility(View.INVISIBLE);
                     right.setVisibility(View.VISIBLE);
                 } else {
-                    imageSwitcher.setImageResource(logements.get(pos).getImages().get(cpt));
+                    imageSwitcher.setImageResource(logementList.get(pos).getImages().get(cpt));
                 }
 
-                if (cpt < logements.get(pos).getImages().size()) {
+                if (cpt < logementList.get(pos).getImages().size()) {
                     right.setVisibility(View.VISIBLE);
                 }
             }
@@ -467,16 +505,16 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
 
         float noteFinale;
 
-        ratingBar.setRating(Float.parseFloat(logements.get(position).getNoteLogement()));
-        titre.setText(logements.get(position).getTitreLogement() + " " + logements.get(position).getTypeLogement() + " à louer.");
-        adresse.setText(logements.get(position).getAdrLogement());
-        nb_chambres.setText(logements.get(position).getNb_chambreLogement());
-        surface.setText(logements.get(position).getSurfaceLogement());
-        detail.setText(logements.get(position).getDetailLogement());
+        ratingBar.setRating(Float.parseFloat(logementList.get(position).getNoteLogement()));
+        titre.setText(logementList.get(position).getTitreLogement() + " " + logementList.get(position).getTypeLogement() + " à louer.");
+        adresse.setText(logementList.get(position).getAdrLogement());
+        nb_chambres.setText(logementList.get(position).getNb_chambreLogement());
+        surface.setText(logementList.get(position).getSurfaceLogement());
+        detail.setText(logementList.get(position).getDetailLogement());
 
-        String str = logements.get(position).getJoursVisiteLogement().get(0).getJourDispo() + " : " + logements.get(position).getJoursVisiteLogement().get(0).getHeureDebutDispo() + " - " + logements.get(position).getJoursVisiteLogement().get(0).getHeureFinDispo();
-        for (int i = 1; i < logements.get(position).getJoursVisiteLogement().size(); i++) {
-            str = str + '\n' + logements.get(position).getJoursVisiteLogement().get(i).getJourDispo() + " : " + logements.get(position).getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logements.get(position).getJoursVisiteLogement().get(i).getHeureFinDispo();
+        String str = logementList.get(position).getJoursVisiteLogement().get(0).getJourDispo() + " : " + logementList.get(position).getJoursVisiteLogement().get(0).getHeureDebutDispo() + " - " + logementList.get(position).getJoursVisiteLogement().get(0).getHeureFinDispo();
+        for (int i = 1; i < logementList.get(position).getJoursVisiteLogement().size(); i++) {
+            str = str + '\n' + logementList.get(position).getJoursVisiteLogement().get(i).getJourDispo() + " : " + logementList.get(position).getJoursVisiteLogement().get(i).getHeureDebutDispo() + " - " + logementList.get(position).getJoursVisiteLogement().get(i).getHeureFinDispo();
         }
         horaires.setText(str);
 
@@ -528,8 +566,8 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                     submit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            logements.get(pos).setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logements.get(pos).getNoteLogement())) / 2));
-                            ratingBar.setRating(Float.parseFloat(logements.get(pos).getNoteLogement()));
+                            logementList.get(pos).setNoteLogement(String.valueOf((ratingBarInterne.getRating() + Float.parseFloat(logementList.get(pos).getNoteLogement())) / 2));
+                            ratingBar.setRating(Float.parseFloat(logementList.get(pos).getNoteLogement()));
                             mDialog.cancel();
                         }
                     });
@@ -552,7 +590,7 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     Intent intent1 = new Intent(getContext(), LoginActivity.class);
-                                    intent1.putExtra("commentaires", logements.get(pos).getCommentairesLogement());
+                                    intent1.putExtra("commentaires", logementList.get(pos).getCommentairesLogement());
                                     startActivity(intent1);
                                     dialog.cancel();
 
@@ -563,7 +601,7 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                 }
                 else{
                     Intent intent = new Intent(getContext(), CommentairesActivity.class);
-                    intent.putExtra("commentaires", logements.get(pos).getCommentairesLogement());
+                    intent.putExtra("commentaires", logementList.get(pos).getCommentairesLogement());
                     startActivity(intent);
                 }
             }
@@ -575,7 +613,7 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
             public void onClick(View v) {
 
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:"+logements.get(pos).getProprietaireLogement().getTelUser()));
+                callIntent.setData(Uri.parse("tel:"+logementList.get(pos).getProprietaireLogement().getTelUser()));
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -591,8 +629,8 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.setType("text/plain");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{logements.get(pos).getProprietaireLogement().getEmailUser()});
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, logements.get(pos).getTitreLogement()+" "+logements.get(pos).getTypeLogement());
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{logementList.get(pos).getProprietaireLogement().getEmailUser()});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, logementList.get(pos).getTitreLogement()+" "+logementList.get(pos).getTypeLogement());
 
                 try
                 {
@@ -634,7 +672,7 @@ public class AppartementFragment extends Fragment implements OnMapReadyCallback{
 
                     rdv = new MesRdvListeSingleRow();
                     rdv.setNom(MainActivity.userConnected.getIdUser());
-                    rdv.setLogement(logements.get(pos).getTitreLogement());
+                    rdv.setLogement(logementList.get(pos).getTitreLogement());
 
                     Calendar mcurrentTime = Calendar.getInstance();
                     int mYear = mcurrentTime.get(Calendar.YEAR); // current year

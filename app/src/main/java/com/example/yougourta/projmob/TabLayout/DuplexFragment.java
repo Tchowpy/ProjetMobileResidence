@@ -47,41 +47,35 @@ public class DuplexFragment extends android.support.v4.app.Fragment {
         ArrayList<Commentaire> commentaire6 = new ArrayList<Commentaire>();
 
         //Remplissage des commentaires
-        commentaire1.add(new Commentaire(MainActivity.user1, "Appartement nul, vraiment déguelasse..."));
-        commentaire1.add(new Commentaire(MainActivity.user1, "Plutôt bien situé."));
-        commentaire1.add(new Commentaire(MainActivity.user3, "Dommage que ça soit un F3"));
-        commentaire1.add(new Commentaire(MainActivity.user2, "Super spacieux"));
-        commentaire1.add(new Commentaire(MainActivity.user2, "Juste magnifique"));
+        commentaire1.add(new Commentaire(MainActivity.user1, "Appartement nul, vraiment déguelasse...", 1));
+        commentaire1.add(new Commentaire(MainActivity.user1, "Plutôt bien situé.", 1));
+        commentaire1.add(new Commentaire(MainActivity.user3, "Dommage que ça soit un F3", 1));
+        commentaire1.add(new Commentaire(MainActivity.user2, "Super spacieux", 1));
+        commentaire1.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
-        commentaire2.add(new Commentaire(MainActivity.user3, "Appartement nul, vraiment déguelasse..."));
-        commentaire2.add(new Commentaire(MainActivity.user4, "Plutôt bien situé."));
-        commentaire2.add(new Commentaire(MainActivity.user2, "Dommage que ça soit un F3"));
-        commentaire2.add(new Commentaire(MainActivity.user3, "Super spacieux"));
-        commentaire2.add(new Commentaire(MainActivity.user4, "Juste magnifique"));
+        commentaire2.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire2.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire2.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
-        commentaire3.add(new Commentaire(MainActivity.user1, "Appartement nul, vraiment déguelasse..."));
-        commentaire3.add(new Commentaire(MainActivity.user3, "Plutôt bien situé."));
-        commentaire3.add(new Commentaire(MainActivity.user2, "Dommage que ça soit un F3"));
-        commentaire3.add(new Commentaire(MainActivity.user4, "Super spacieux"));
-        commentaire3.add(new Commentaire(MainActivity.user3, "Juste magnifique"));
+        commentaire3.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire3.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire3.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire3.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
-        commentaire4.add(new Commentaire(MainActivity.user1, "Appartement nul, vraiment déguelasse..."));
-        commentaire4.add(new Commentaire(MainActivity.user4, "Plutôt bien situé."));
-        commentaire4.add(new Commentaire(MainActivity.user4, "Dommage que ça soit un F3"));
-        commentaire4.add(new Commentaire(MainActivity.user2, "Super spacieux"));
-        commentaire4.add(new Commentaire(MainActivity.user3, "Juste magnifique"));
+        commentaire4.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire4.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire4.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire4.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
-        commentaire5.add(new Commentaire(MainActivity.user3, "Appartement nul, vraiment déguelasse..."));
-        commentaire5.add(new Commentaire(MainActivity.user2, "Plutôt bien situé."));
-        commentaire5.add(new Commentaire(MainActivity.user1, "Dommage que ça soit un F3"));
-        commentaire5.add(new Commentaire(MainActivity.user1, "Super spacieux"));
-        commentaire5.add(new Commentaire(MainActivity.user2, "Juste magnifique"));
+        commentaire5.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire5.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire5.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire5.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
-        commentaire6.add(new Commentaire(MainActivity.user4, "Appartement nul, vraiment déguelasse..."));
-        commentaire6.add(new Commentaire(MainActivity.user4, "Plutôt bien situé."));
-        commentaire6.add(new Commentaire(MainActivity.user4, "Dommage que ça soit un F3"));
-        commentaire6.add(new Commentaire(MainActivity.user3, "Super spacieux"));
-        commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique"));
+        commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
+        commentaire6.add(new Commentaire(MainActivity.user2, "Juste magnifique", 1));
 
         /** IMAGES **/
 
@@ -151,7 +145,7 @@ public class DuplexFragment extends android.support.v4.app.Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        adapter = new LogementsAdapter(logements);
+        adapter = new LogementsAdapter(logements, getActivity().getApplicationContext());
         recyclerView.setAdapter(adapter);
     }
 }

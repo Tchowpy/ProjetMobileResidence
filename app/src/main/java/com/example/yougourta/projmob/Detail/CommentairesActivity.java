@@ -10,18 +10,32 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.yougourta.projmob.Classes.Commentaire;
+import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.MainActivity;
 import com.example.yougourta.projmob.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommentairesActivity extends AppCompatActivity {
 
     ListView listView;
     ArrayList<Commentaire> commentaires;
+    Logement logement;
     commentaireAdapter adapter;
+    String url="http://192.168.43.76:8080/insertcomment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +43,8 @@ public class CommentairesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_commentaires);
 
         Intent intent = getIntent();
-        commentaires = (ArrayList<Commentaire>) intent.getSerializableExtra("commentaires");
-
+        logement = (Logement) intent.getSerializableExtra("logement");
+        commentaires = logement.getCommentairesLogement();
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -46,7 +60,31 @@ public class CommentairesActivity extends AppCompatActivity {
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                commentaires.add(new Commentaire(MainActivity.userConnected, comment.getText().toString()));
+                final Commentaire commentaire = new Commentaire(MainActivity.userConnected, comment.getText().toString(), logement.getIdLogement());
+                commentaires.add(commentaire);
+                RequestQueue queue = Volley.newRequestQueue(CommentairesActivity.this);
+                StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Toast.makeText(CommentairesActivity.this, s, Toast.LENGTH_SHORT).show();
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(CommentairesActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("commentaire", new Gson().toJson(commentaire));
+                        return map;
+                    }
+                };
+
+                queue.add(request);
                 comment.setText("");
                 adapter.notifyDataSetChanged();
                 listView.smoothScrollToPosition(adapter.getCount());

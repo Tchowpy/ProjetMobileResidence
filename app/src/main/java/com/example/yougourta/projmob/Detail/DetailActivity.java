@@ -2,6 +2,7 @@ package com.example.yougourta.projmob.Detail;
 
 import android.Manifest;
 import android.content.Context;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -37,6 +38,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
 import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.Classes.RendezVous;
@@ -113,7 +115,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         final Intent intent = getIntent();
         logement = (Logement) intent.getSerializableExtra("appartement");
 
-
+        /*
         final ImageSwitcher imageSwitcher;
         imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
 
@@ -128,7 +130,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         });
 
         imageSwitcher.setImageResource(logement.getImages().get(0));
-
 
         final Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
         Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
@@ -172,7 +173,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
         });
+        */
 
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        ImageAdapter adapter = new ImageAdapter(this, logement);
+        viewPager.setAdapter(adapter);
 
         TextView prix = (TextView) findViewById(R.id.prix);
         TextView titre = (TextView) findViewById(R.id.titre);
@@ -282,7 +287,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     Intent intent1 = new Intent(DetailActivity.this, LoginActivity.class);
-                                    intent1.putExtra("commentaires", logement.getCommentairesLogement());
+                                    intent1.putExtra("logement", logement);
                                     startActivity(intent1);
                                     dialog.cancel();
 
@@ -293,7 +298,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
                 else{
                     Intent intent = new Intent(DetailActivity.this, CommentairesActivity.class);
-                    intent.putExtra("commentaires", logement.getCommentairesLogement());
+                    intent.putExtra("logement", logement);
                     startActivity(intent);
                 }
             }
@@ -422,4 +427,5 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
 }

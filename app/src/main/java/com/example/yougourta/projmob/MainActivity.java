@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", 0, false, null);
         user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", 0, false, null);
         user3 = new Utilisateur("NadjiMob", "nadji_mob", "+213780668840", "dn_azri@esi.dz", "Stade", R.drawable.ic_picture2, true, null);
-        user4 = new Utilisateur("YougortaTchowh", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", R.drawable.ic_picture1, true, null);
+        user4 = new Utilisateur("juju06", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", R.drawable.ic_picture1, true, null);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 

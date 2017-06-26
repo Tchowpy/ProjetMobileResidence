@@ -9,10 +9,20 @@ import java.io.Serializable;
 public class Commentaire implements Serializable{
     private Utilisateur utilisateur;
     private String contentu;
+    private long id_lgt;
 
-    public Commentaire(Utilisateur utilisateur, String contentu) {
+    public Commentaire(Utilisateur utilisateur, String contentu, long id_lgt) {
         this.utilisateur = utilisateur;
         this.contentu = contentu;
+        this.id_lgt = id_lgt;
+    }
+
+    public long getId_lgt() {
+        return id_lgt;
+    }
+
+    public void setId_lgt(long id_lgt) {
+        this.id_lgt = id_lgt;
     }
 
     public Utilisateur getUtilisateur() {
