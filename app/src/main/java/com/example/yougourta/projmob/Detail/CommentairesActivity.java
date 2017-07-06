@@ -20,7 +20,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.yougourta.projmob.Classes.Commentaire;
+import com.example.yougourta.projmob.Classes.ConnexionManager;
 import com.example.yougourta.projmob.Classes.Logement;
+import com.example.yougourta.projmob.Classes.Utilisateur;
 import com.example.yougourta.projmob.MainActivity;
 import com.example.yougourta.projmob.R;
 import com.google.gson.Gson;
@@ -45,13 +47,14 @@ public class CommentairesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         logement = (Logement) intent.getSerializableExtra("logement");
         commentaires = logement.getCommentairesLogement();
+
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_dyalna);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Commentaires");
 
         listView = (ListView)findViewById(R.id.listView);
-        adapter = new commentaireAdapter(commentaires);
+        adapter = new commentaireAdapter(commentaires, this);
         listView.setAdapter(adapter);
 
         TextView envoyer = (TextView)findViewById(R.id.envoyer);
@@ -60,14 +63,16 @@ public class CommentairesActivity extends AppCompatActivity {
         envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Commentaire commentaire = new Commentaire(MainActivity.userConnected, comment.getText().toString(), logement.getIdLogement());
+                ConnexionManager connexionManager = new ConnexionManager(CommentairesActivity.this);
+                Utilisateur usr = new Utilisateur();
+                usr.setIdUser(connexionManager.getIdConnected());
+                final Commentaire commentaire = new Commentaire(usr, comment.getText().toString(), logement.getIdLogement());
                 commentaires.add(commentaire);
                 RequestQueue queue = Volley.newRequestQueue(CommentairesActivity.this);
                 StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
                         Toast.makeText(CommentairesActivity.this, s, Toast.LENGTH_SHORT).show();
-
                     }
                 }, new Response.ErrorListener() {
                     @Override

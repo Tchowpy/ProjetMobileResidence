@@ -26,10 +26,10 @@ public class Logement implements Serializable{
     private ArrayList<Integer> images; //table images
 
     private Utilisateur proprietaireLogement;//
-    private String noteLogement;//table note
+    private float noteLogement;//table note
     private ArrayList<Commentaire> commentairesLogement; //table commentaires
     private String etatLogement;
-    private String nbVuesLogement;
+    private int nbnotesLogement;
 
     private String mainImg;
 
@@ -38,7 +38,7 @@ public class Logement implements Serializable{
 
     }
 
-    public Logement(String titreLogement, String prixLogement, String typeLogement, String surfaceLogement, String nb_chambreLogement, String adrLogement, String detailLogement, double latitude, double longetude, ArrayList<Disponibilite> joursVisiteLogement, ArrayList<Integer> images, Utilisateur proprietaireLogement, String noteLogement, ArrayList<Commentaire> commentairesLogement, String etatLogement, String nbVuesLogement) {
+    public Logement(String titreLogement, String prixLogement, String typeLogement, String surfaceLogement, String nb_chambreLogement, String adrLogement, String detailLogement, double latitude, double longetude, ArrayList<Disponibilite> joursVisiteLogement, ArrayList<Integer> images, Utilisateur proprietaireLogement, String noteLogement, ArrayList<Commentaire> commentairesLogement, String etatLogement, int nbnotesLogement) {
         this.titreLogement = titreLogement;
         this.prixLogement = prixLogement;
         this.typeLogement = typeLogement;
@@ -51,10 +51,10 @@ public class Logement implements Serializable{
         this.joursVisiteLogement = joursVisiteLogement;
         this.images = images;
         this.proprietaireLogement = proprietaireLogement;
-        this.noteLogement = noteLogement;
+        //this.noteLogement = noteLogement;
         this.commentairesLogement = commentairesLogement;
         this.etatLogement = etatLogement;
-        this.nbVuesLogement = nbVuesLogement;
+        this.nbnotesLogement = nbnotesLogement;
     }
 
     public long getIdLogement() {
@@ -169,11 +169,11 @@ public class Logement implements Serializable{
         this.proprietaireLogement = proprietaireLogement;
     }
 
-    public String getNoteLogement() {
+    public float getNoteLogement() {
         return noteLogement;
     }
 
-    public void setNoteLogement(String noteLogement) {
+    public void setNoteLogement(float noteLogement) {
         this.noteLogement = noteLogement;
     }
 
@@ -193,11 +193,11 @@ public class Logement implements Serializable{
         this.etatLogement = etatLogement;
     }
 
-    public String getNbVuesLogement() {
-        return nbVuesLogement;
+    public int getnbnotesLogement() {
+        return nbnotesLogement;
     }
 
-    public void setNbVuesLogement(String nbVuesLogement) {
-        this.nbVuesLogement = nbVuesLogement;
+    public void setnbnotesLogement(int nbnotesLogement) {
+        this.nbnotesLogement = nbnotesLogement;
     }
 }

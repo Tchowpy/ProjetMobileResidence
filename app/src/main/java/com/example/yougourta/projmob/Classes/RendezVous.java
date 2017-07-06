@@ -7,16 +7,36 @@ import java.io.Serializable;
  */
 
 public class RendezVous implements Serializable{
+    private int idRDV;
     private Logement logementRDV;
     private Utilisateur visiteurRDV;
-    private String jourRDV;
-    private String heureDebutRDV;
+    private String dateRDV;
+    private String heureRDV;
+    private int etatRDV = 0;
 
     public RendezVous(Logement logementRDV, Utilisateur visiteurRDV, String jourRDV, String heureDebutRDV) {
         this.logementRDV = logementRDV;
         this.visiteurRDV = visiteurRDV;
-        this.jourRDV = jourRDV;
-        this.heureDebutRDV = heureDebutRDV;
+        this.dateRDV = jourRDV;
+        this.heureRDV = heureDebutRDV;
+    }
+
+    public RendezVous(){}
+
+    public int getIdRDV() {
+        return idRDV;
+    }
+
+    public void setIdRDV(int idRDV) {
+        this.idRDV = idRDV;
+    }
+
+    public int getEtatRDV() {
+        return etatRDV;
+    }
+
+    public void setEtatRDV(int etatRDV) {
+        this.etatRDV = etatRDV;
     }
 
     public Logement getLogementRDV() {
@@ -35,20 +55,20 @@ public class RendezVous implements Serializable{
         this.visiteurRDV = visiteurRDV;
     }
 
-    public String getJourRDV() {
-        return jourRDV;
+    public String getDateRDV() {
+        return dateRDV;
     }
 
-    public void setJourRDV(String jourRDV) {
-        this.jourRDV = jourRDV;
+    public void setDateRDV(String jourRDV) {
+        this.dateRDV = jourRDV;
     }
 
-    public String getHeureDebutRDV() {
-        return heureDebutRDV;
+    public String getHeureRDV() {
+        return heureRDV;
     }
 
-    public void setHeureDebutRDV(String heureDebutRDV) {
-        this.heureDebutRDV = heureDebutRDV;
+    public void setHeureRDV(String heureDebutRDV) {
+        this.heureRDV = heureDebutRDV;
     }
 
 }

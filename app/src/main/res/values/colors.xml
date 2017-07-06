@@ -15,4 +15,8 @@
 
     <item name="gray_holo_dark" type="color">#ff464646</item>
     <item name="gray_holo_light" type="color">#ffd0d0d0</item>
+
+    <color name="color_delete">#F44336</color>
+    <color name="color_mark">#1cbe9d</color>
+
 </resources>

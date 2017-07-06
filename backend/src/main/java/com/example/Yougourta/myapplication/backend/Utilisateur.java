@@ -13,11 +13,11 @@ public class Utilisateur implements Serializable{
     private String telUser;
     private String emailUser;
     private String adrUser;
-    private int imageUser;
+    private String imageUser;
     private boolean connecté;
     private ArrayList<RendezVous> rendezVous;
 
-    public Utilisateur(String idUser, String mdpUser, String telUser, String emailUser, String adrUser, int imageUser, boolean connecté, ArrayList<RendezVous> rendezVous) {
+    public Utilisateur(String idUser, String mdpUser, String telUser, String emailUser, String adrUser, String imageUser, boolean connecté, ArrayList<RendezVous> rendezVous) {
         this.idUser = idUser;
         this.mdpUser = mdpUser;
         this.telUser = telUser;
@@ -78,11 +78,11 @@ public class Utilisateur implements Serializable{
         this.connecté = connecté;
     }
 
-    public int getImageUser() {
+    public String getImageUser() {
         return imageUser;
     }
 
-    public void setImageUser(int imageUser) {
+    public void setImageUser(String imageUser) {
         this.imageUser = imageUser;
     }
 

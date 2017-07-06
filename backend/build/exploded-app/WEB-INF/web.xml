@@ -31,4 +31,58 @@
         <servlet-name>SetComments</servlet-name>
         <url-pattern>/insertcomment</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SetRdv</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.SetRendezvousServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SetRdv</servlet-name>
+        <url-pattern>/insertrdv</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetRdvs</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.GetRendezvousServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetRdvs</servlet-name>
+        <url-pattern>/getrdvs</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetRdvsattente</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.GetRendezvousattenteServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetRdvsattente</servlet-name>
+        <url-pattern>/getrdvsattente</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetUtilisateur</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.GetUtilisateurServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetUtilisateur</servlet-name>
+        <url-pattern>/getuser</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UpdateRdvs</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.UpdateRendezvousServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateRdvs</servlet-name>
+        <url-pattern>/updaterdv</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Updatenote</servlet-name>
+        <servlet-class>com.example.Yougourta.myapplication.backend.UpdateNoteServelet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Updatenote</servlet-name>
+        <url-pattern>/updatenote</url-pattern>
+    </servlet-mapping>
 </web-app>

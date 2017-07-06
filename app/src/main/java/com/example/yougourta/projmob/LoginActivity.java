@@ -21,7 +21,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.yougourta.projmob.Classes.Commentaire;
+import com.example.yougourta.projmob.Classes.ConnexionManager;
 import com.example.yougourta.projmob.Classes.Logement;
 import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.Classes.Utilisateur;
@@ -31,10 +37,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,6 +57,12 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
     ArrayList<Commentaire> commentaires = null;
 
+    List<Utilisateur> userList = null;
+    ConnexionManager connexionManager ;
+    boolean valid = true;
+
+    String email="" ;
+    String password="";
 
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
@@ -57,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
 
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,10 +200,10 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     public boolean validate() {
-        boolean valid = true;
+        valid = true;
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        email = _emailText.getText().toString();
+        password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError("enter a valid email address");
@@ -201,31 +218,43 @@ public class LoginActivity extends AppCompatActivity implements
         } else {
             _passwordText.setError(null);
         }
-        if(MainActivity.user1.getEmailUser().equals(email) && MainActivity.user1.getMdpUser().equals(password)){
 
-            MainActivity.estConnecte =true;
-            MainActivity.userConnected = MainActivity.user1;
-            valid = true;
-        }
-        else if(MainActivity.user2.getEmailUser().equals(email) && MainActivity.user2.getMdpUser().equals(password)){
-            MainActivity.estConnecte =true;
-            MainActivity.userConnected = MainActivity.user2;
-            valid = true;
-        }
-        else if(MainActivity.user3.getEmailUser().equals(email) && MainActivity.user3.getMdpUser().equals(password)){
-            MainActivity.estConnecte =true;
-            MainActivity.userConnected = MainActivity.user3;
-            valid = true;
-        }
-        else if(MainActivity.user4.getEmailUser().equals(email) && MainActivity.user4.getMdpUser().equals(password)){
-            MainActivity.estConnecte =true;
-            MainActivity.userConnected = MainActivity.user4;
-            valid = true;
-        }
-        else {
-            _passwordText.setError(null);
-            valid = false;
-        }
+        String url="http://192.168.43.76:8080/getuser?email="+email+"&mdp="+password;
+
+        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+        JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                userList = Arrays.asList(gson.fromJson(jsonArray.toString(),Utilisateur[].class));
+                for(int i=0;i<userList.size();i++) {
+                    Toast.makeText(LoginActivity.this, userList.get(0).getEmailUser(), Toast.LENGTH_LONG).show();
+                }
+                if(!userList.isEmpty()){
+                    Utilisateur userConnected = userList.get(0);
+                    if(userConnected.getEmailUser().equals(email) && userConnected.getMdpUser().equals(password)){
+
+                        valid = true;
+                        connexionManager = new ConnexionManager(LoginActivity.this);
+                        connexionManager.saveConnectedUsser(userConnected);
+                    }
+                    else {
+                        _passwordText.setError(null);
+                        valid = false;
+                    }
+                }
+                else valid =false;
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getApplicationContext(), "Une erreur s'est produite", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(request);
+
 
         return valid;
     }

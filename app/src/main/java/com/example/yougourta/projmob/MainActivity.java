@@ -28,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.yougourta.projmob.Classes.ConnexionManager;
 import com.example.yougourta.projmob.Classes.MesRdvEnAttenteSingleRow;
 import com.example.yougourta.projmob.Classes.MesRdvListeSingleRow;
 import com.example.yougourta.projmob.Classes.Utilisateur;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle myToggle;
     NavigationView navigationView;
 
-    String[] fruits = {"Bejaia", "Oued Smar", "El Kseur", "Oued Ghir", "Said Hamdine", "Ben Aknoun", "Bab Ezzouar"};
+    String[] fruits = {"Bejaia", "Oued Smar", "El Kseur", "Oued Ghir", "Said Hamdine", "Ben Aknoun", "Bab Ezzouar" , "Thenia"};
 
     public static AutoCompleteTextView actv;
 
@@ -78,10 +80,10 @@ public class MainActivity extends AppCompatActivity
         list = new ArrayList<MesRdvListeSingleRow>();
         list1 = new ArrayList<MesRdvEnAttenteSingleRow>();
 
-        user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", 0, false, null);
-        user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", 0, false, null);
-        user3 = new Utilisateur("NadjiMob", "nadji_mob", "+213780668840", "dn_azri@esi.dz", "Stade", R.drawable.ic_picture2, true, null);
-        user4 = new Utilisateur("juju06", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", R.drawable.ic_picture1, true, null);
+        user1 = new Utilisateur("ArezkiBourihane06", "kiki_kiki", "+213780668840", "da_bourihane@esi.dz", "Sidi Ali Labhar", "", false, null);
+        user2 = new Utilisateur("B-Rekellah", "bily_kiki", "+213780668840", "db_rezkellah@esi.dz", "Tizi", "", false, null);
+        user3 = new Utilisateur("nadji06", "nadji_mob", "+213780668840", "dn_azri@esi.dz", "Stade", "", true, null);
+        user4 = new Utilisateur("juju06", "juju_kiki", "+213780668840", "dy_ait_saada@esi.dz", "Polyvalent", "juju.png", true, null);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
@@ -121,7 +123,8 @@ public class MainActivity extends AppCompatActivity
         super.onPostResume();
         View hview = navigationView.getHeaderView(0);
 
-        if (estConnecte == false) {
+        ConnexionManager connexionManager = new ConnexionManager(this);
+        if (connexionManager.isUserConnected() == false) {
             navigationView.getMenu().setGroupVisible(R.id.nav_grp1_connecte, false);
             navigationView.getMenu().setGroupVisible(R.id.nav_grp2_connecte, false);
             navigationView.getMenu().setGroupVisible(R.id.nav_grp_non_connecte, true);
@@ -141,9 +144,11 @@ public class MainActivity extends AppCompatActivity
             TextView textView1 = (TextView) hview.findViewById(R.id.header_textview1);
             TextView textView2 = (TextView) hview.findViewById(R.id.header_textview2);
             ImageView imageView = (ImageView) hview.findViewById(R.id.nav_header_image);
-            imageView.setImageResource(userConnected.getImageUser());
+            /**imageView.setImageResource(userConnected.getImageUser()); GLID GLID GLID**/
+
+            Glide.with(this).load("http://192.168.43.76:8888/MAMP/images/ProjMob/users/"+connexionManager.getIdConnected()+"/"+connexionManager.getImageConnected()).skipMemoryCache(true).into(imageView);
             textView1.setText("Vous êtes connectés en tant que");
-            textView2.setText(this.userConnected.getEmailUser());
+            textView2.setText(connexionManager.getEmailConnected());
         }
     }
 
@@ -194,29 +199,28 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_mes_rdv) {
 
-            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            /*list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
             list1.add(new MesRdvEnAttenteSingleRow("AIT SAADA ", "Villa 15", "17-01-2019", "15h"));
             list1.add(new MesRdvEnAttenteSingleRow("BOURIANE ", "Bungalow 15", "17-01-2019", "15h"));
             list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
-            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));
+            list1.add(new MesRdvEnAttenteSingleRow("AZRI Nadji", "APPARTEMENT f03", "17-01-2019", "15h"));*/
             Intent intent = new Intent(MainActivity.this, MesRdvEnAttenteActivity.class);
-            intent.putExtra("list", list1);
             startActivity(intent);
 
         } else if (id == R.id.nav_mes_demandes_rdv) {
 
-            if((DetailActivity.rdv != null) && (!String.valueOf(DetailActivity.rdv.getHeure()).equals("null")))
+            /*if((DetailActivity.rdv != null) && (!String.valueOf(DetailActivity.rdv.getHeure()).equals("null")))
             {
                 list.add(DetailActivity.rdv);
-            }
+            }*/
 
             Intent intent = new Intent(MainActivity.this, ConfirmerRdvs.class);
-            intent.putExtra("list", list);
             startActivity(intent);
 
         } else if (id == R.id.nav_deconnexion) {
-            estConnecte = false;
-            userConnected = null;
+
+            ConnexionManager connexionManager = new ConnexionManager(this);
+            connexionManager.deconnexion();
 
             final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
                     R.style.AppTheme_Dark_Dialog);
